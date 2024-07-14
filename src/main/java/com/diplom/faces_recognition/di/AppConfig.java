@@ -8,6 +8,8 @@ import com.diplom.faces_recognition.presenters.ModelResponseFormatter;
 import com.diplom.faces_recognition.usecases.ModelDataSource;
 import com.diplom.faces_recognition.usecases.ModelInputBoundary;
 import com.diplom.faces_recognition.usecases.ModelInteractor;
+import com.diplom.faces_recognition.utils.log.ILog;
+import com.diplom.faces_recognition.utils.log.LoggerImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,4 +34,7 @@ public class AppConfig {
     public IModelFactory modelFactory(){
         return new ModelFactoryImpl();
     }
+
+    @Bean
+    public ILog logger() { return new LoggerImpl(); }
 }

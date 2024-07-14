@@ -1,5 +1,6 @@
 package com.diplom.faces_recognition;
 
+import io.vertx.core.logging.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
