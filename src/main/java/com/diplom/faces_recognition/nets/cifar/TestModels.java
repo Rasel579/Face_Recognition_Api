@@ -1,6 +1,7 @@
-package com.diplom.faces_recognition.utils.cifar;
+package com.diplom.faces_recognition.nets.cifar;
 
 
+import com.diplom.faces_recognition.nets.cifar.contract.IMagePreProcess;
 import com.diplom.faces_recognition.utils.ImageUtils;
 import com.diplom.faces_recognition.utils.log.ILog;
 import lombok.AllArgsConstructor;
@@ -25,18 +26,19 @@ public class TestModels {
 
     @Autowired
     private static ILog logger;
-    private static final CifarImagePreProcessor IMAGE_PRE_PROCESSOR = new CifarImagePreProcessor();
-    private static final NativeImageLoader LOADER = new NativeImageLoader(ImageUtils.HEIGHT, ImageUtils.WIDTH );
+    @Autowired
+    private static IMagePreProcess IMAGE_PRE_PROCESSOR;
+    private static final NativeImageLoader LOADER = new NativeImageLoader(ImageUtils.HEIGHT, ImageUtils.WIDTH);
     private static boolean showTrainingPrecision = false;
 
     public static void main(String[] args) throws IOException {
         String[] allModels = new File(BASE).list();
 
-        for (String model : allModels){
+        for (String model : allModels) {
             ComputationGraph vgg16 = ModelSerializer.restoreComputationGraph(new File(BASE + model));
             String classesNumber = model.substring(0, model.indexOf("_"));
             logger.info(vgg16.summary());
-            if (showTrainingPrecision){
+            if (showTrainingPrecision) {
                 showTrainingPrecision(vgg16, classesNumber);
             }
             TestResult testResult = test(vgg16, model);
@@ -46,27 +48,27 @@ public class TestModels {
 
     private static void showTrainingPrecision(ComputationGraph vgg16, String classesNumber) throws IOException {
         File[] carTrackings = new File("CarTracking").listFiles();
-        for (File carTracking : carTrackings){
-           if (carTracking.getName().contains(classesNumber)){
-               DataSetIterator dataSetIterator = ImageUtils.createDataSetIterator(carTracking, Integer.parseInt(classesNumber), 64);
-               Evaluation eval = vgg16.evaluate(dataSetIterator);
-               logger.info(eval.stats());
-           }
+        for (File carTracking : carTrackings) {
+            if (carTracking.getName().contains(classesNumber)) {
+                DataSetIterator dataSetIterator = ImageUtils.createDataSetIterator(carTracking, Integer.parseInt(classesNumber), 64);
+                Evaluation eval = vgg16.evaluate(dataSetIterator);
+                logger.info(eval.stats());
+            }
         }
     }
 
-    public static TestResult test(ComputationGraph vgg16, String model){
+    public static TestResult test(ComputationGraph vgg16, String model) {
         Map<File, List<INDArray>> map = buildEmbeddings(vgg16);
         int wrongPredictionsWithOtherClasses = 0;
         int wrongPredictionsInOneClassSequentially = 0;
         Set<Map.Entry<File, List<INDArray>>> entries = map.entrySet();
 
-        for (Map.Entry<File, List<INDArray>> entry: entries) {
+        for (Map.Entry<File, List<INDArray>> entry : entries) {
             wrongPredictionsWithOtherClasses += compareWithOtherClasses(entries, entry);
             wrongPredictionsInOneClassSequentially += compareInsideOneClassSequentially(entry);
         }
 
-        return  new TestResult(
+        return new TestResult(
                 model,
                 wrongPredictionsInOneClassSequentially,
                 wrongPredictionsWithOtherClasses,
@@ -78,14 +80,14 @@ public class TestModels {
         int missMatch = 0;
         File folder = entry.getKey();
         List<INDArray> currentEmbeddings = entry.getValue();
-        for (INDArray currentEmbedding: currentEmbeddings ){
-            for (Map.Entry<File, List<INDArray>> entryOther : entries){
-                if (entryOther.getKey().getName().equals(folder.getName())){
+        for (INDArray currentEmbedding : currentEmbeddings) {
+            for (Map.Entry<File, List<INDArray>> entryOther : entries) {
+                if (entryOther.getKey().getName().equals(folder.getName())) {
                     continue;
                 }
                 List<INDArray> otherEmbeddings = entryOther.getValue();
-                for (INDArray otherEmbedding: otherEmbeddings){
-                    if (currentEmbedding.distance2(otherEmbedding) < THRESHOLD){
+                for (INDArray otherEmbedding : otherEmbeddings) {
+                    if (currentEmbedding.distance2(otherEmbedding) < THRESHOLD) {
                         missMatch++;
                     }
                 }
@@ -94,12 +96,12 @@ public class TestModels {
         return missMatch;
     }
 
-    private static int compareInsideOneClassSequentially(Map.Entry<File, List<INDArray>> entry){
+    private static int compareInsideOneClassSequentially(Map.Entry<File, List<INDArray>> entry) {
         int wrongPredictionsInsideOneClassOrdered = 0;
         List<INDArray> value = entry.getValue();
         INDArray prevEmbedding = value.get(0);
-        for (int i = 1; i < value.size(); i++){
-            if (prevEmbedding.distance2(value.get(i)) > THRESHOLD){
+        for (int i = 1; i < value.size(); i++) {
+            if (prevEmbedding.distance2(value.get(i)) > THRESHOLD) {
                 wrongPredictionsInsideOneClassOrdered++;
             }
             prevEmbedding = value.get(i);
@@ -111,18 +113,18 @@ public class TestModels {
         File[] folders = new File(TEST_DATA).listFiles();
         Map<File, List<INDArray>> map = new HashMap<>();
 
-        for (File folder : folders){
+        for (File folder : folders) {
             File[] carIsOneClass = folder.listFiles();
 
             Arrays.sort(carIsOneClass, Comparator.comparing(File::getName));
 
             Map<File, INDArray> fileEmbedding = new TreeMap<>(Comparator.comparing(File::getName));
 
-            Stream.of(carIsOneClass).forEach( inOneClass -> {
+            Stream.of(carIsOneClass).forEach(inOneClass -> {
                 try {
-                    INDArray embeddings = getEmbeddings( model, inOneClass);
+                    INDArray embeddings = getEmbeddings(model, inOneClass);
                     fileEmbedding.put(inOneClass, embeddings);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
@@ -147,5 +149,7 @@ public class TestModels {
         int wrongPredictionInOneClassSequentially;
         int wrongPredictionsInOtherClasses;
         int total;
-    };
+    }
+
+    ;
 }

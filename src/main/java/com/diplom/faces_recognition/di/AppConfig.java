@@ -3,6 +3,14 @@ package com.diplom.faces_recognition.di;
 import com.diplom.faces_recognition.dao.JpaModel;
 import com.diplom.faces_recognition.entity.IModelFactory;
 import com.diplom.faces_recognition.entity.ModelFactoryImpl;
+import com.diplom.faces_recognition.nets.cifar.CifarImagePreProcessor;
+import com.diplom.faces_recognition.nets.cifar.TrainCifar10Model;
+import com.diplom.faces_recognition.nets.cifar.contract.AbstractCifarNetModel;
+import com.diplom.faces_recognition.nets.cifar.contract.IMagePreProcess;
+import com.diplom.faces_recognition.nets.facerecognition.FaceNetModel;
+import com.diplom.faces_recognition.nets.facerecognition.FaceRecognition;
+import com.diplom.faces_recognition.nets.facerecognition.contract.AbstractFaceNetModel;
+import com.diplom.faces_recognition.nets.facerecognition.contract.IFaceRecognize;
 import com.diplom.faces_recognition.presenters.ModelPresenter;
 import com.diplom.faces_recognition.presenters.ModelResponseFormatter;
 import com.diplom.faces_recognition.usecases.ModelDataSource;
@@ -37,4 +45,16 @@ public class AppConfig {
 
     @Bean
     public ILog logger() { return new LoggerImpl(); }
+
+    @Bean
+    public IMagePreProcess dataNormalization() { return new CifarImagePreProcessor(); }
+
+    @Bean
+    public AbstractCifarNetModel cifarNet() { return new TrainCifar10Model(); }
+
+    @Bean
+    public AbstractFaceNetModel faceNet() { return new FaceNetModel(); }
+
+    @Bean
+    public IFaceRecognize faceRecognize() { return new FaceRecognition(); }
 }

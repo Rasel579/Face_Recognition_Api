@@ -13,24 +13,24 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class ModelController {
+public class AuthController {
 
     @Autowired
     private ModelInputBoundary modelInputBoundary;
     @Autowired
     private IModelFactory modelFactory;
 
-    @GetMapping("/model")
+    @GetMapping("/auth")
     List<ModelResponse> create(@RequestBody ModelRequest request){
         return modelInputBoundary.create(request);
     }
 
-    @PostMapping("/model/save")
+    @PostMapping("/auth/signup")
     ModelResponse authenticate(@RequestBody ModelRequest request){
         return modelInputBoundary.authenticate(modelFactory.create(request.getName(), request.getContent()));
     }
 
-    @PostMapping("/model/signin")
+    @PostMapping("/auth/signin")
     ModelResponse signIn(@RequestBody ModelRequest request){
         return modelInputBoundary.signIn(modelFactory.create(request.getName(), request.getContent()));
     }

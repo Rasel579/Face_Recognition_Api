@@ -1,6 +1,7 @@
 package com.diplom.faces_recognition.utils;
 
-import com.diplom.faces_recognition.utils.cifar.CifarImagePreProcessor;
+
+import com.diplom.faces_recognition.nets.cifar.CifarImagePreProcessor;
 import com.diplom.faces_recognition.utils.yolo.Speed;
 import org.bytedeco.opencv.global.opencv_imgcodecs;
 import org.bytedeco.opencv.opencv_core.Mat;

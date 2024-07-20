@@ -1,10 +1,10 @@
-package com.diplom.faces_recognition.utils.cifar;
+package com.diplom.faces_recognition.nets.cifar;
 
+import com.diplom.faces_recognition.nets.cifar.contract.AbstractCifarNetModel;
 import com.diplom.faces_recognition.utils.ImageUtils;
 import com.diplom.faces_recognition.utils.log.ILog;
 import com.diplom.faces_recognition.utils.yolo.Speed;
 import org.bytedeco.opencv.opencv_core.Mat;
-import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.Updater;
@@ -27,11 +27,9 @@ import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
-import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.learning.config.IUpdater;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -39,24 +37,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
-public class TrainCifar10Model implements Serializable {
-
-    private static final int NUM_POSSIBLE_LABELS = 611;
-    private static final int BATCH_SIZE = 256;
-    private static final int E_BATCH_SIZE = 256;
-    private static final DataNormalization IMAGE_PRE_PROCESSOR = new CifarImagePreProcessor();
-    private static final NativeImageLoader LOADER = new NativeImageLoader(ImageUtils.HEIGHT, ImageUtils.WIDTH, 3);
-    private static final String CONTENT_LAYER_NAME = "embeddings";
-    private static final String MODEL_SAVE_PATH = "./src/main/resources/static/models/";
-    private static final int SAVE_INTERVAL = 50;
-    private static final int TEST_INTERVAL = 5;
-    private static final int EPOCH_INTERVAL = 2400;
-    public static final int EMBEDDINGS = 512;
-    public static final int I_EPOCH = 0;
-    public static final double LAMBDA = 5e-4;
-    private static final String PREFIX = "EXP";
-    private ComputationGraph cifar10Transfer;
-    private static final String FREEZE_UNTIL_LAYER = "fc2";
+public class TrainCifar10Model extends AbstractCifarNetModel implements Serializable {
 
     @Autowired
     private static ILog logger;
@@ -66,11 +47,8 @@ public class TrainCifar10Model implements Serializable {
         trainCifar10Model.train();
     }
 
-    public ComputationGraph getCifar10Transfer() {
-        return cifar10Transfer;
-    }
-
-    private void train() throws IOException {
+    @Override
+    protected void train() throws IOException {
         ZooModel zooModel = VGG16.builder().build();
         ComputationGraph vgg16 = (ComputationGraph) zooModel.initPretrained();
         logger.info(vgg16.summary());
@@ -122,7 +100,7 @@ public class TrainCifar10Model implements Serializable {
                 .build();
         logger.info(cifar10Model.summary());
 
-        File rootDir = new File("./resources/train_from_video_" + NUM_POSSIBLE_LABELS);
+        File rootDir = new File("./resources/static/train_from_video_" + NUM_POSSIBLE_LABELS);
 
         DataSetIterator dataSetIterator = ImageUtils.createDataSetIterator(rootDir, NUM_POSSIBLE_LABELS, BATCH_SIZE);
         DataSetIterator testSetIterator = ImageUtils.createDataSetIterator(rootDir, NUM_POSSIBLE_LABELS, BATCH_SIZE);
@@ -150,7 +128,8 @@ public class TrainCifar10Model implements Serializable {
 
     }
 
-    private void testResult(ComputationGraph cifar10Model, DataSetIterator testSetIterator, int iEpoch, String modelName) {
+    @Override
+    protected void testResult(ComputationGraph cifar10Model, DataSetIterator testSetIterator, int iEpoch, String modelName) {
         if (iEpoch % TEST_INTERVAL == 0) {
             Evaluation evaluation = cifar10Model.evaluate(testSetIterator);
             logger.info(evaluation.stats());
@@ -158,13 +137,15 @@ public class TrainCifar10Model implements Serializable {
         }
     }
 
-    private void saveProgress(ComputationGraph cifar10Model, int iEpoch, String modelName) throws IOException {
+    @Override
+    protected void saveProgress(ComputationGraph cifar10Model, int iEpoch, String modelName) throws IOException {
         if (iEpoch % SAVE_INTERVAL == 0) {
             ModelSerializer.writeModel(cifar10Model,
                     new File(MODEL_SAVE_PATH + modelName), true);
         }
     }
 
+    @Override
     public void loadTrainedModel(String pretrainedCifarModel) throws IOException {
         File file = new File(MODEL_SAVE_PATH + pretrainedCifarModel);
         logger.info("loading model " + file);
@@ -174,6 +155,7 @@ public class TrainCifar10Model implements Serializable {
 
     }
 
+    @Override
     public INDArray getEmbeddings(Mat file, DetectedObject object, Speed selectedSpeed) throws IOException {
         BufferedImage croppedImage = ImageUtils.cropImageWithYOLO(selectedSpeed, file, object, false);
         INDArray croppedArray = LOADER.asMatrix(croppedImage);

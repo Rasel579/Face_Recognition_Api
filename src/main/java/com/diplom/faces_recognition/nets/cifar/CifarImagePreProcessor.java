@@ -1,18 +1,18 @@
-package com.diplom.faces_recognition.utils.cifar;
+package com.diplom.faces_recognition.nets.cifar;
 
+import com.diplom.faces_recognition.nets.cifar.contract.IMagePreProcess;
 import com.diplom.faces_recognition.utils.log.ILog;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.impl.broadcast.BroadcastAddOp;
 import org.nd4j.linalg.dataset.api.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
-import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.serializer.NormalizerType;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.factory.Nd4jBackend;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class CifarImagePreProcessor implements DataNormalization {
+public class CifarImagePreProcessor implements IMagePreProcess {
 
     private static final Nd4jBackend b = Nd4j.getBackend();
 
@@ -38,6 +38,7 @@ public class CifarImagePreProcessor implements DataNormalization {
         this.preProcess(features);
     }
 
+    @Override
     public void preProcess(INDArray features) {
         Nd4j.getExecutioner().execAndReturn(
                 new BroadcastAddOp(features.dup(), VGG_MEAN_OFFSET_BGR, features, 1)
