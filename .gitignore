@@ -3,7 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+src/main/resources/static/yolo.h5
+src/main/resources/static/yolo2_dl4j_inference.v1.zip
 ### STS ###
 .apt_generated
 .classpath
