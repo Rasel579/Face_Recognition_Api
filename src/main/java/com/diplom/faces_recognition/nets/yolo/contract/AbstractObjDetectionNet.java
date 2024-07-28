@@ -27,7 +27,7 @@ public abstract class AbstractObjDetectionNet implements IObjDetectionNet {
     protected final Speed selectedSpeed = Speed.MEDIUM;
     protected boolean outputFrames = false;
     protected double trackingThreshold = 0.2;
-    protected String pretrainedCifarModel = "./src/main/resources/static/models/631_epoch_data_e512_b256_600.zip";
+    protected String pretrainedCifarModel = "631_epoch_data_e512_b256_600.zip";
     protected Strategy strategy = Strategy.IoU_PLUS_ENCODINGS;
     protected volatile List<MarkedObject> predictedObjects = new ConcurrentArrayList<>();
     protected final Set<MarkedObject> previousPredictedObjects = new TreeSet<>();
