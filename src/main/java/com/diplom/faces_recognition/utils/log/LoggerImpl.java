@@ -8,12 +8,14 @@ public class LoggerImpl implements ILog {
     private static Logger logger;
     private static ILog instance;
 
+    public LoggerImpl(){
+        logger = LoggerFactory.getLogger( this.getClass() );
+    }
     @Override
     public ILog init(Class<?> className){
 
         if ( instance == null){
             logger = LoggerFactory.getLogger( className );
-            return new LoggerImpl();
         }
 
         return instance;

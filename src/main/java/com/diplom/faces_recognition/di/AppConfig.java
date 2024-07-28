@@ -11,11 +11,17 @@ import com.diplom.faces_recognition.nets.facerecognition.FaceNetModel;
 import com.diplom.faces_recognition.nets.facerecognition.FaceRecognition;
 import com.diplom.faces_recognition.nets.facerecognition.contract.AbstractFaceNetModel;
 import com.diplom.faces_recognition.nets.facerecognition.contract.IFaceRecognize;
+import com.diplom.faces_recognition.nets.yolo.Yolo;
+import com.diplom.faces_recognition.nets.yolo.contract.AbstractObjDetectionNet;
 import com.diplom.faces_recognition.presenters.ModelPresenter;
 import com.diplom.faces_recognition.presenters.ModelResponseFormatter;
+import com.diplom.faces_recognition.presenters.net.NetPresenter;
+import com.diplom.faces_recognition.presenters.net.NetPresenterImpl;
 import com.diplom.faces_recognition.usecases.ModelDataSource;
 import com.diplom.faces_recognition.usecases.ModelInputBoundary;
 import com.diplom.faces_recognition.usecases.ModelInteractor;
+import com.diplom.faces_recognition.usecases.net.NetIteractor;
+import com.diplom.faces_recognition.usecases.net.NetUsecase;
 import com.diplom.faces_recognition.utils.log.ILog;
 import com.diplom.faces_recognition.utils.log.LoggerImpl;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +43,10 @@ public class AppConfig {
     public ModelPresenter modelPresenter(){
         return new ModelResponseFormatter();
     }
+    @Bean
+    public NetPresenter netPresenter(){
+        return new NetPresenterImpl();
+    }
 
     @Bean
     public IModelFactory modelFactory(){
@@ -57,4 +67,10 @@ public class AppConfig {
 
     @Bean
     public IFaceRecognize faceRecognize() { return new FaceRecognition(); }
+
+    @Bean
+    public AbstractObjDetectionNet objDetectionNet() { return new Yolo(); }
+
+    @Bean
+    public NetUsecase netUsecase() { return new NetIteractor(); }
 }

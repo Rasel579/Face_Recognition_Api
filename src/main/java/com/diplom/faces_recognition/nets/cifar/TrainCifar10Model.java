@@ -40,7 +40,7 @@ import java.util.Map;
 public class TrainCifar10Model extends AbstractCifarNetModel implements Serializable {
 
     @Autowired
-    private static ILog logger;
+    private ILog logger;
 
     public static void main(String[] args) throws IOException {
         TrainCifar10Model trainCifar10Model = new TrainCifar10Model();

@@ -1,5 +1,6 @@
 package com.diplom.faces_recognition.nets.facerecognition;
 
+import com.diplom.faces_recognition.nets.facerecognition.contract.AbstractFaceNetModel;
 import com.diplom.faces_recognition.nets.facerecognition.contract.IFaceRecognize;
 import com.diplom.faces_recognition.utils.log.ILog;
 import org.bytedeco.opencv.global.opencv_imgcodecs;
@@ -23,9 +24,9 @@ import java.util.Map;
 public class FaceRecognition implements IFaceRecognize {
 
     @Autowired
-    private static ILog logger;
+    private ILog logger;
     @Autowired
-    private FaceNetModel faceNetModel;
+    private AbstractFaceNetModel faceNetModel;
     private static final double THRESHOLD = 1.5;
     private ComputationGraph computationGraph;
     private static final NativeImageLoader LOADER = new NativeImageLoader(96, 96, 3);

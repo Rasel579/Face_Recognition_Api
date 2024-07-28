@@ -19,5 +19,5 @@ public abstract class AbstractFaceNetModel implements IFaceNet {
 
     protected static final int BATCH_SIZE = 10;
     protected static final int EPOCH_NUM = 25;
-    protected static final String SAVE_PATH = "./src/main/resources/facenet_model/trained_face_recon_model.zip";
+    protected static final String SAVE_PATH = "./src/main/resources/static/facenet_model/trained_face_recon_model.zip";
 }

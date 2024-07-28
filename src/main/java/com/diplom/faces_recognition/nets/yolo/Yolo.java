@@ -61,8 +61,10 @@ public class Yolo extends AbstractObjDetectionNet {
         warmUp(yolo);
     }
 
+    @Override
     public GenericResponse feedNet(INetFrame frame) {
         try {
+            initialize(frame.getWindowName());
             Mat mat = new Mat(frame.getBytesImage());
             Mat resizeMat = new Mat(getSelectedSpeed().height, getSelectedSpeed().width, mat.type());
             push(resizeMat, frame.getWindowName());

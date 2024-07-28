@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractObjDetectionNet implements IObjDetectionNet {
 
     @Autowired
-    protected static ILog logger;
+    protected ILog logger;
     protected static final double YOLO_DETECTION_THRESHOLD = 0.75;
     protected final String[] COCO_CLASSES = {"person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "sofa", "pottedplant", "bed", "diningtable", "toilet", "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"};
     protected final Map<String, Stack<Mat>> stackMap = new ConcurrentHashMap<>();
@@ -28,7 +28,7 @@ public abstract class AbstractObjDetectionNet implements IObjDetectionNet {
     protected boolean outputFrames = false;
     protected double trackingThreshold = 0.2;
     protected String pretrainedCifarModel = "./src/main/resources/static/models/631_epoch_data_e512_b256_600.zip";
-    protected Strategy strategy =Strategy.IoU_PLUS_ENCODINGS;
+    protected Strategy strategy = Strategy.IoU_PLUS_ENCODINGS;
     protected volatile List<MarkedObject> predictedObjects = new ConcurrentArrayList<>();
     protected final Set<MarkedObject> previousPredictedObjects = new TreeSet<>();
     protected HashMap<Integer, String> map;
@@ -39,5 +39,5 @@ public abstract class AbstractObjDetectionNet implements IObjDetectionNet {
     @Autowired
     protected IFaceRecognize faceRecognition;
 
-    protected static final String BASE = "./src/main/resources";
+    protected static final String BASE = "./src/main/resources/static/";
 }
