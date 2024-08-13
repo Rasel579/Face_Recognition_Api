@@ -17,7 +17,7 @@ public class CifarImagePreProcessor implements IMagePreProcess {
     private static final Nd4jBackend b = Nd4j.getBackend();
 
     @Autowired
-    private static ILog logger;
+    private ILog logger;
     public static final INDArray VGG_MEAN_OFFSET_BGR = Nd4j.create(new float[]{255, 255, 255});
 
     /**

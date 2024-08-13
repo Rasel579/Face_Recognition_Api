@@ -29,6 +29,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AppConfig {
+
+    @Bean
+    public ILog logger() { return new LoggerImpl(); }
+
     @Bean
     public ModelInputBoundary modelInputBoundary() {
         return new ModelInteractor();
@@ -54,23 +58,19 @@ public class AppConfig {
     }
 
     @Bean
-    public ILog logger() { return new LoggerImpl(); }
-
-    @Bean
     public IMagePreProcess dataNormalization() { return new CifarImagePreProcessor(); }
 
+    @Bean
+    public AbstractFaceNetModel faceNet() { return new FaceNetModel(); }
+    @Bean
+    public IFaceRecognize faceRecognize() { return new FaceRecognition(); }
     @Bean
     public AbstractCifarNetModel cifarNet() { return new TrainCifar10Model(); }
 
     @Bean
-    public AbstractFaceNetModel faceNet() { return new FaceNetModel(); }
-
-    @Bean
-    public IFaceRecognize faceRecognize() { return new FaceRecognition(); }
-
-    @Bean
-    public AbstractObjDetectionNet objDetectionNet() { return new Yolo(); }
-
-    @Bean
     public NetUsecase netUsecase() { return new NetIteractor(); }
+
+    @Bean
+    public AbstractObjDetectionNet objDetectionNet() { return new Yolo( logger(), faceRecognize(), cifarNet()); }
+
 }

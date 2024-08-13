@@ -456,7 +456,7 @@ public class FaceNetModel extends AbstractFaceNetModel {
 
             model.testData();
         } catch (Exception e) {
-            logger.info(e.toString());
+
         }
     }
 

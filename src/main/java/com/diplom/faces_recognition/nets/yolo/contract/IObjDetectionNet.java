@@ -8,7 +8,7 @@ import org.bytedeco.opencv.opencv_core.Mat;
 import java.io.IOException;
 
 public interface IObjDetectionNet {
-    void initialize(String windowName) throws Exception;
+    void initialize() throws Exception;
     void push(Mat frame, String windowName);
     GenericResponse drawBoundingBoxesRectangle(Mat matFrame, String windowName);
     Speed getSelectedSpeed();
