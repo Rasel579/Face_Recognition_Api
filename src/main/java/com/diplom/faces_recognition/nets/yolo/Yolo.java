@@ -4,10 +4,15 @@ import com.diplom.faces_recognition.entity.netmodel.INetFrame;
 import com.diplom.faces_recognition.models.GenericResponse;
 import com.diplom.faces_recognition.models.MarkedObject;
 import com.diplom.faces_recognition.models.NetModelResponse;
+import com.diplom.faces_recognition.nets.cifar.contract.AbstractCifarNetModel;
+import com.diplom.faces_recognition.nets.facerecognition.contract.IFaceRecognize;
 import com.diplom.faces_recognition.nets.yolo.contract.AbstractObjDetectionNet;
 import com.diplom.faces_recognition.utils.ImageUtils;
+import com.diplom.faces_recognition.utils.log.ILog;
 import com.diplom.faces_recognition.utils.yolo.Speed;
 import com.diplom.faces_recognition.utils.yolo.Strategy;
+import org.bytedeco.javacv.Java2DFrameConverter;
+import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.Point;
 import org.bytedeco.opencv.opencv_core.Scalar;
@@ -24,6 +29,7 @@ import org.threadly.concurrent.collections.ConcurrentArrayList;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -34,8 +40,16 @@ import static org.bytedeco.opencv.global.opencv_imgproc.*;
 
 public class Yolo extends AbstractObjDetectionNet {
 
+    private ComputationGraph yolo;
+    private final OpenCVFrameConverter.ToMat toMatConverter = new OpenCVFrameConverter.ToMat();
+    private Java2DFrameConverter imageConverter = new Java2DFrameConverter();
+
+    public Yolo(ILog logger, IFaceRecognize faceRecognition, AbstractCifarNetModel trainCifar10Model) {
+        super(logger, faceRecognition, trainCifar10Model);
+    }
+
     @Override
-    public void initialize(String windowName) throws Exception {
+    public void initialize() throws Exception {
 
         faceRecognition.loadModel();
 
@@ -45,9 +59,7 @@ public class Yolo extends AbstractObjDetectionNet {
             addPhoto(Objects.requireNonNull(images)[0].getAbsolutePath(), file.getName());
         }
 
-        stackMap.put(windowName, new Stack<>());
-
-        ComputationGraph yolo = YOLOPretrained.initPretrained();
+        yolo = YOLOPretrained.initPretrained();
         /* Развернуть статистику по работе сети
         UIServer uiServer = UIServer.getInstance();
         StatsStorage statsStorage = new InMemoryStatsStorage();
@@ -56,7 +68,6 @@ public class Yolo extends AbstractObjDetectionNet {
         prepareYOLOLabels();
 
         trainCifar10Model.loadTrainedModel(pretrainedCifarModel);
-        modelsMap.put(windowName, yolo);
         loader = new NativeImageLoader(selectedSpeed.height, selectedSpeed.width, 3);
         warmUp(yolo);
     }
@@ -64,12 +75,21 @@ public class Yolo extends AbstractObjDetectionNet {
     @Override
     public GenericResponse feedNet(INetFrame frame) {
         try {
-            initialize(frame.getWindowName());
-            Mat mat = new Mat(frame.getBytesImage());
+
+            if (yolo == null) {
+                initialize();
+            }
+
+            modelsMap.put(frame.getWindowName(), yolo);
+            stackMap.computeIfAbsent(frame.getWindowName(), k -> new Stack<>());
+
+            BufferedImage img = ImageIO.read(new ByteArrayInputStream(frame.getBytesImage()));
+            Mat mat = new Mat(toMatConverter.convert(imageConverter.convert(img)));
             Mat resizeMat = new Mat(getSelectedSpeed().height, getSelectedSpeed().width, mat.type());
             push(resizeMat, frame.getWindowName());
             org.bytedeco.opencv.global.opencv_imgproc.resize(mat, resizeMat, resizeMat.size());
             predictBoundingBoxes(frame.getWindowName());
+
             return drawBoundingBoxesRectangle(resizeMat, frame.getWindowName());
         } catch (Exception exception) {
             logger.error(exception.getMessage());
@@ -94,8 +114,8 @@ public class Yolo extends AbstractObjDetectionNet {
 
     @Override
     public GenericResponse drawBoundingBoxesRectangle(Mat matFrame, String windowName) {
-        if (invalidData( matFrame) || outputFrames) {
-             return null;
+        if (invalidData(matFrame) || outputFrames) {
+            return null;
         }
 
         if (previousPredictedObjects == null) {
@@ -267,5 +287,4 @@ public class Yolo extends AbstractObjDetectionNet {
     private void addPhoto(String path, String name) throws IOException {
         faceRecognition.registerNewMember(name, path);
     }
-
 }

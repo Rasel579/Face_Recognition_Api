@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractFaceNetModel implements IFaceNet {
 
     @Autowired
-    protected static ILog logger;
+    protected ILog logger;
     protected final int numClasses = 31;
     protected final long seed = 1234;
     protected final int[] inputShape = new int[]{3, 96, 96};

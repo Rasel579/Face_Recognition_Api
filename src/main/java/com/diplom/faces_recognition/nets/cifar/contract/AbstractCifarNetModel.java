@@ -11,7 +11,7 @@ import java.io.IOException;
 public abstract class AbstractCifarNetModel implements ICifarNetModel {
 
     @Autowired
-    protected static IMagePreProcess IMAGE_PRE_PROCESSOR;
+    protected IMagePreProcess IMAGE_PRE_PROCESSOR;
     protected static final int NUM_POSSIBLE_LABELS = 611;
     protected static final int BATCH_SIZE = 256;
     protected static final int E_BATCH_SIZE = 256;
