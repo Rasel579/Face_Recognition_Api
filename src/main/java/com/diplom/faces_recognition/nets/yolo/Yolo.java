@@ -126,9 +126,10 @@ public class Yolo extends AbstractObjDetectionNet {
 
         for (MarkedObject markedObject : detectedObjects) {
             try {
-                createBoundingBoxRectangle(matFrame, markedObject);
+                NetModelResponse netModelResponse = new NetModelResponse();
+                createBoundingBoxRectangle(matFrame, markedObject, netModelResponse);
                 previousPredictedObjects.add(markedObject);
-                return new NetModelResponse(windowName, matFrame.createBuffer().toString());
+                return netModelResponse;
             } catch (Exception e) {
                 logger.error("Problem with out of the bounds image");
             }
@@ -136,7 +137,7 @@ public class Yolo extends AbstractObjDetectionNet {
         return new GenericResponse(404, "Don't have predicted objects");
     }
 
-    private void createBoundingBoxRectangle(Mat file, @NotNull MarkedObject markedObject) {
+    private void createBoundingBoxRectangle(Mat file, @NotNull MarkedObject markedObject, NetModelResponse netModelResponse) {
         double[] xy1 = markedObject.getDetectedObject().getTopLeftXY();
         double[] xy2 = markedObject.getDetectedObject().getBottomRightXY();
 
@@ -150,19 +151,25 @@ public class Yolo extends AbstractObjDetectionNet {
 
         int w = selectedSpeed.width;
         int h = selectedSpeed.height;
-        int x1 = (int) Math.round(w * xy1[0] / selectedSpeed.gridWidth);
-        int y1 = (int) Math.round(h * xy1[1] / selectedSpeed.gridHeight);
-        int x2 = (int) Math.round(w * xy2[0] / selectedSpeed.gridWidth);
-        int y2 = (int) Math.round(h * xy2[1] / selectedSpeed.gridHeight);
+        double x1 = (double) Math.round(w * xy1[0] / selectedSpeed.gridWidth);
+        double y1 = (double) Math.round(h * xy1[1] / selectedSpeed.gridHeight);
+        double x2 = (double) Math.round(w * xy2[0] / selectedSpeed.gridWidth);
+        double y2 = (double) Math.round(h * xy2[1] / selectedSpeed.gridHeight);
 
-        rectangle(file, new Point(x1, y1), new Point(x2, y2), Scalar.BLUE);
+        netModelResponse.setTopX(x1);
+        netModelResponse.setTopY(y1);
+        netModelResponse.setBottomX(x2);
+        netModelResponse.setBottomY(y2);
+
+        rectangle(file, new Point((int)x1, (int)y1), new Point((int)x2, (int)y2), Scalar.BLUE);
         String name = "не знаю";
         try {
             name = faceRecognition.whoIs(file);
+            netModelResponse.setName(name);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        putText(file, groupMap.get(map.get(predictedClass)) + "-" + name, new Point(x1 + 2, y1 - 2), FONT_HERSHEY_DUPLEX, 1, Scalar.GREEN);
+        putText(file, groupMap.get(map.get(predictedClass)) + "-" + name, new Point((int)x1 + 2, (int)y1 - 2), FONT_HERSHEY_DUPLEX, 1, Scalar.GREEN);
     }
 
     @Nullable
