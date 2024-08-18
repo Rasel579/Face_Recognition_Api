@@ -462,13 +462,13 @@ public class FaceNetModel extends AbstractFaceNetModel {
 
     private void trainModel() throws IOException {
 
-        File trainData = new File("./src/main/resources/faces_datasets/train_data");
+        File trainData = new File("./src/main/resources/static/faces_datasets/train_data");
 
         FileSplit train = new FileSplit(trainData, NativeImageLoader.ALLOWED_FORMATS, new Random(12345));
 
         ParentPathLabelGenerator labelMarker = new ParentPathLabelGenerator();
 
-        ImageRecordReader recordReader = new ImageRecordReader(inputShape[1], inputShape[2], inputShape[0], labelMarker);
+        ImageRecordReader recordReader = new ImageRecordReader(inputShape[0], inputShape[1], inputShape[2], labelMarker);
 
         recordReader.initialize(train);
 
@@ -507,7 +507,7 @@ public class FaceNetModel extends AbstractFaceNetModel {
 
         ComputationGraph model = this.initSavedModel();
 
-        File testData = new File("./src/main/resources/faces_datasets/test_data");
+        File testData = new File("./src/main/resources/static/faces_datasets/test_data");
         FileSplit test = new FileSplit(testData, NativeImageLoader.ALLOWED_FORMATS, new Random(12345));
 
         ParentPathLabelGenerator labelMarker = new ParentPathLabelGenerator();

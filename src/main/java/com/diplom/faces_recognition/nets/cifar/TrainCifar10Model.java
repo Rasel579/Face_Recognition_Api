@@ -3,8 +3,10 @@ package com.diplom.faces_recognition.nets.cifar;
 import com.diplom.faces_recognition.nets.cifar.contract.AbstractCifarNetModel;
 import com.diplom.faces_recognition.utils.ImageUtils;
 import com.diplom.faces_recognition.utils.log.ILog;
+import com.diplom.faces_recognition.utils.log.LoggerImpl;
 import com.diplom.faces_recognition.utils.yolo.Speed;
 import org.bytedeco.opencv.opencv_core.Mat;
+import org.deeplearning4j.core.storage.StatsStorage;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.Updater;
@@ -18,7 +20,9 @@ import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.layers.objdetect.DetectedObject;
 import org.deeplearning4j.nn.transferlearning.FineTuneConfiguration;
 import org.deeplearning4j.nn.transferlearning.TransferLearning;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.ui.api.UIServer;
+import org.deeplearning4j.ui.model.stats.StatsListener;
+import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage;
 import org.deeplearning4j.util.ModelSerializer;
 import org.deeplearning4j.zoo.ZooModel;
 import org.deeplearning4j.zoo.model.VGG16;
@@ -51,6 +55,9 @@ public class TrainCifar10Model extends AbstractCifarNetModel implements Serializ
     protected void train() throws IOException {
         ZooModel zooModel = VGG16.builder().build();
         ComputationGraph vgg16 = (ComputationGraph) zooModel.initPretrained();
+        if (logger == null ){
+            logger = new LoggerImpl();
+        }
         logger.info(vgg16.summary());
 
         IUpdater iUpdaterWithDefaultConfig = Updater.ADAM.getIUpdaterWithDefaultConfig();
@@ -100,11 +107,21 @@ public class TrainCifar10Model extends AbstractCifarNetModel implements Serializ
                 .build();
         logger.info(cifar10Model.summary());
 
-        File rootDir = new File("./resources/static/train_from_video_" + NUM_POSSIBLE_LABELS);
+        File rootDir = new File("./src/main/resources/static/vgg16/train_from_video_" + NUM_POSSIBLE_LABELS);
+        if (!rootDir.exists() && !rootDir.mkdir()){
+            logger.error(rootDir.getName() + " Not created");
+        }
+        DataSetIterator dataSetIterator = ImageUtils.createDataSetIterator(new File("D:/datasets/images_category/images_category"), NUM_POSSIBLE_LABELS, BATCH_SIZE);
+        DataSetIterator testSetIterator = ImageUtils.createDataSetIterator(new File("D:/datasets/images_category/images_category"), NUM_POSSIBLE_LABELS, BATCH_SIZE);
 
-        DataSetIterator dataSetIterator = ImageUtils.createDataSetIterator(rootDir, NUM_POSSIBLE_LABELS, BATCH_SIZE);
-        DataSetIterator testSetIterator = ImageUtils.createDataSetIterator(rootDir, NUM_POSSIBLE_LABELS, BATCH_SIZE);
-        cifar10Model.setListeners(new ScoreIterationListener(2));
+        UIServer uiServer = UIServer.getInstance();
+
+        StatsStorage statsStorage = new InMemoryStatsStorage();
+
+        uiServer.attach(statsStorage);
+
+        cifar10Model.setListeners(new StatsListener(statsStorage));
+
         int iEpoch = I_EPOCH;
         while (iEpoch < EPOCH_INTERVAL) {
             while (dataSetIterator.hasNext()) {

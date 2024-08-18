@@ -11,7 +11,7 @@ public abstract class AbstractFaceNetModel implements IFaceNet {
     protected ILog logger;
     protected final int numClasses = 31;
     protected final long seed = 1234;
-    protected final int[] inputShape = new int[]{3, 96, 96};
+    protected final int[] inputShape = new int[]{96, 96, 3};
     protected final IUpdater updater = new Adam(0.1, 0.9, 0.999, 0.01);
     protected final int encodings = 128;
     public static int reluIndex = 1;
