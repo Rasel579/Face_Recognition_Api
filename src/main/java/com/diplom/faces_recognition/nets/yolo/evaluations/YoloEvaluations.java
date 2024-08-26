@@ -63,7 +63,7 @@ public class YoloEvaluations {
                     for (DetectedObject detectedObj : detectedObjects) {
                         if (detectedObj == null)
                             continue;
-                        if (labelsList.size() <  detectedObj.getPredictedClass() || !labelsList.get(detectedObj.getPredictedClass()).equals(expected.getLabel())) {
+                        if (labelsList.size() <=  detectedObj.getPredictedClass() || !labelsList.get(detectedObj.getPredictedClass()).equals(expected.getLabel())) {
                             continue;
                         }
 
@@ -86,7 +86,10 @@ public class YoloEvaluations {
                     falseNegatives.incrementCount(expected.getLabel(), 1); //False Negative
                 }
             }
+            features.close();
+            results.close();
         }
+
     }
 
     private double calcIou(ImageObject expected, DetectedObject detectedObj) {
@@ -147,7 +150,7 @@ public class YoloEvaluations {
     }
 
     public double getF1() {
-        return (0.5) * (getPrecision() + getRecall());
+        return Double.isNaN((0.5) * (getPrecision() + getRecall())) ? 0 : (0.5) * (getPrecision() + getRecall());
     }
 
     public List<String> getLabelsList() {

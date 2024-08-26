@@ -1,15 +1,19 @@
 package com.diplom.faces_recognition.di;
 
-import org.springframework.context.annotation.Bean;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
 
+@OpenAPIDefinition(
+        info = @Info(
+                title = "Face Recognition API",
+                description = "Face Recognition", version = "1.0.0",
+                contact = @Contact(
+                        name = "Shaykhislamov Ruslan",
+                        email = "ruslanshaykh@yandex.ru",
+                        url = "http://localhost/"
+                )
+        )
+)
 public class SwaggerConfig {
-    /*@Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build();
-    } */
-
 }
