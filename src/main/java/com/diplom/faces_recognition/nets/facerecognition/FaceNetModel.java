@@ -1,6 +1,7 @@
 package com.diplom.faces_recognition.nets.facerecognition;
 
 import com.diplom.faces_recognition.nets.facerecognition.contract.AbstractFaceNetModel;
+import com.diplom.faces_recognition.utils.log.LoggerImpl;
 import org.datavec.api.io.labels.ParentPathLabelGenerator;
 import org.datavec.api.split.FileSplit;
 import org.datavec.image.loader.NativeImageLoader;
@@ -23,7 +24,9 @@ import org.deeplearning4j.ui.model.stats.StatsListener;
 import org.deeplearning4j.ui.model.storage.InMemoryStatsStorage;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.evaluation.classification.Evaluation;
+import org.nd4j.evaluation.classification.ROC;
 import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
@@ -39,7 +42,8 @@ public class FaceNetModel extends AbstractFaceNetModel {
 
     public ComputationGraphConfiguration conf() {
 
-        ComputationGraphConfiguration.GraphBuilder graph = new NeuralNetConfiguration.Builder().seed(seed)
+        ComputationGraphConfiguration.GraphBuilder graph = new NeuralNetConfiguration
+                .Builder().seed(seed)
                 .activation(Activation.IDENTITY)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .updater(updater)
@@ -52,7 +56,7 @@ public class FaceNetModel extends AbstractFaceNetModel {
                 .addLayer("pad1",
                         FaceNetUtils.zeroPadding(3), "input1")
                 .addLayer("conv1",
-                        convolution(7, inputShape[0], 64, 2),
+                        convolution(7, inputShape[2], 64, 2),
                         "pad1")
                 .addLayer("bn1", FaceNetUtils.batchNorm(64),
                         "conv1")
@@ -67,7 +71,6 @@ public class FaceNetModel extends AbstractFaceNetModel {
                                 .convolutionMode(ConvolutionMode.Truncate)
                                 .build(),
                         "pad2")
-
                 // Inception 2
                 .addLayer("conv2",
                         convolution(1, 64, 64),
@@ -120,7 +123,7 @@ public class FaceNetModel extends AbstractFaceNetModel {
                 .addLayer("dense", new DenseLayer.Builder().nIn(736).nOut(encodings)
                         .activation(Activation.IDENTITY).build(), "avgpool")
                 .addVertex("encodings", new L2NormalizeVertex(new int[]{}, 1e-12), "dense")
-                // .setInputTypes(InputType.convolutional(96, 96, inputShape[0]));
+                // .setInputTypes(InputType.convolutional(96, 96, inputShape[2]));
 
                 // Uncomment in case of training the network, graph.setOutputs should be lossLayer then
                 .addLayer("lossLayer", new CenterLossOutputLayer.Builder()
@@ -128,7 +131,7 @@ public class FaceNetModel extends AbstractFaceNetModel {
                                 .activation(Activation.SOFTMAX).nIn(128).nOut(numClasses).lambda(1e-4).alpha(0.9)
                                 .gradientNormalization(GradientNormalization.RenormalizeL2PerLayer).build(),
                         "encodings")
-                .setInputTypes(InputType.convolutional(96, 96, inputShape[0]));
+                .setInputTypes(InputType.convolutional(96, 96, inputShape[2]));
         graph.setOutputs("lossLayer");
         // graph.setOutputs("encodings");
 
@@ -453,22 +456,23 @@ public class FaceNetModel extends AbstractFaceNetModel {
             FaceNetModel model = new FaceNetModel();
             model.init();
             model.trainModel();
-
             model.testData();
-        } catch (Exception e) {
 
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
     private void trainModel() throws IOException {
 
-        File trainData = new File("./src/main/resources/faces_datasets/train_data");
+        File trainData = new File("./src/main/resources/static/faces_datasets/train_data");
 
         FileSplit train = new FileSplit(trainData, NativeImageLoader.ALLOWED_FORMATS, new Random(12345));
 
         ParentPathLabelGenerator labelMarker = new ParentPathLabelGenerator();
 
-        ImageRecordReader recordReader = new ImageRecordReader(inputShape[1], inputShape[2], inputShape[0], labelMarker);
+        ImageRecordReader recordReader = new ImageRecordReader(inputShape[0], inputShape[1], inputShape[2], labelMarker);
 
         recordReader.initialize(train);
 
@@ -493,6 +497,9 @@ public class FaceNetModel extends AbstractFaceNetModel {
             model.fit(dataIterator);
         }
 
+        if (logger == null ){
+            logger = new LoggerImpl();
+        }
         logger.info("******SAVE TRAINED MODEL*****");
 
         File saveLocation = new File(SAVE_PATH);
@@ -507,24 +514,27 @@ public class FaceNetModel extends AbstractFaceNetModel {
 
         ComputationGraph model = this.initSavedModel();
 
-        File testData = new File("./src/main/resources/faces_datasets/test_data");
+        File testData = new File("./src/main/resources/static/faces_datasets/test_data");
         FileSplit test = new FileSplit(testData, NativeImageLoader.ALLOWED_FORMATS, new Random(12345));
 
         ParentPathLabelGenerator labelMarker = new ParentPathLabelGenerator();
 
-        ImageRecordReader recordReader = new ImageRecordReader(inputShape[1], inputShape[2], inputShape[0], labelMarker);
+        ImageRecordReader recordReader = new ImageRecordReader(inputShape[0], inputShape[1], inputShape[2], labelMarker);
 
         recordReader.initialize(test);
 
-        DataSetIterator testIterator = new RecordReaderDataSetIterator(recordReader, BATCH_SIZE, 1, 31);
+        DataSetIterator testIterator = new RecordReaderDataSetIterator(recordReader, BATCH_SIZE);
         DataNormalization scaler = new ImagePreProcessingScaler(0, 1);
 
         scaler.fit(testIterator);
         testIterator.setPreProcessor(scaler);
 
-        Evaluation eval = model.evaluate(testIterator);
 
-        logger.info(eval.stats());
+        Evaluation eval = model.evaluate(testIterator);
+        if (logger == null ){
+            logger = new LoggerImpl();
+        }
+        logger.info(eval.stats(false,true));
 
     }
 

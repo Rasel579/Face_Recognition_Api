@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class FaceNetUtils {
-    static final String BASE = "./src/main/resources/face/";
+    static final String BASE = "./src/main/resources/static/face/";
 
     static ActivationLayer relu() {
         return new ActivationLayer.Builder().activation(Activation.RELU).build();

@@ -59,12 +59,7 @@ public class Yolo extends AbstractObjDetectionNet {
             addPhoto(Objects.requireNonNull(images)[0].getAbsolutePath(), file.getName());
         }
 
-        yolo = YOLOPretrained.initPretrained();
-        /* Развернуть статистику по работе сети
-        UIServer uiServer = UIServer.getInstance();
-        StatsStorage statsStorage = new InMemoryStatsStorage();
-        uiServer.attach(statsStorage);
-        yolo.setListeners(new StatsListener(statsStorage)); */
+        yolo = YOLOPretrained.initSavedModel();
         prepareYOLOLabels();
 
         trainCifar10Model.loadTrainedModel(pretrainedCifarModel);

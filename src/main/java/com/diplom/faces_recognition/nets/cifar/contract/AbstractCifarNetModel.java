@@ -12,16 +12,16 @@ public abstract class AbstractCifarNetModel implements ICifarNetModel {
 
     @Autowired
     protected IMagePreProcess IMAGE_PRE_PROCESSOR;
-    protected static final int NUM_POSSIBLE_LABELS = 611;
-    protected static final int BATCH_SIZE = 256;
+    protected static final int NUM_POSSIBLE_LABELS = 8;
+    protected static final int BATCH_SIZE = 2;
     protected static final int E_BATCH_SIZE = 256;
     protected static final NativeImageLoader LOADER = new NativeImageLoader(ImageUtils.HEIGHT, ImageUtils.WIDTH, 3);
     protected static final String CONTENT_LAYER_NAME = "embeddings";
     protected static final String MODEL_SAVE_PATH = "./src/main/resources/static/models/";
     protected static final int SAVE_INTERVAL = 50;
     protected static final int TEST_INTERVAL = 5;
-    protected static final int EPOCH_INTERVAL = 2400;
-    protected static final int EMBEDDINGS = 512;
+    protected static final int EPOCH_INTERVAL = 10;
+    protected static final int EMBEDDINGS = 8;
     protected static final int I_EPOCH = 0;
     protected static final double LAMBDA = 5e-4;
     protected static final String PREFIX = "EXP";
