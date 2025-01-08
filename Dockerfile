@@ -1,18 +1,15 @@
-#
-# Build stage
-#
-FROM maven:3.9.8-eclipse-temurin:17-jdk-jammy AS build
-ENV HOME=/usr/app
-RUN mkdir -p $HOME
-WORKDIR $HOME
-ADD . $HOME
-RUN --mount=type=cache,target=/root/.m2 ./mvnw -f $HOME/pom.xml clean package
+ FROM eclipse-temurin:17-jdk-jammy
 
-#
-# Package stage
-#
-FROM eclipse-temurin:17-jre-jammy
-ARG JAR_FILE=/usr/app/target/*.jar
-COPY --from=build $JAR_FILE /app/runner.jar
-EXPOSE 8080
-ENTRYPOINT java -jar /app/runner.jar
+ WORKDIR /app
+ COPY .mvn/ .mvn
+ COPY mvnw pom.xml ./
+
+ # Converting the mvnw line endings during build (if you don’t change line endings of the mvnw file)
+ RUN apt-get update && apt-get install -y dos2unix
+ RUN dos2unix ./mvnw
+
+ RUN ./mvnw dependency:resolve
+
+ COPY src ./src
+
+ CMD ["./mvnw", "spring-boot:run"]
