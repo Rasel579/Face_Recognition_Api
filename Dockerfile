@@ -1,4 +1,4 @@
-FROM openjdk:17-oracle
+FROM maven:3.8.6-openjdk:17-oracle AS build
 ADD . /src
 WORKDIR /src
 RUN mvn package -DskipTests
