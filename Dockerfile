@@ -1,4 +1,4 @@
 FROM java:17
 EXPOSE 8080
-ADD /target/demo.jar demo.jar
-ENTRYPOINT ["java","-jar","demo.jar"]
+ADD /target/faces_recognition-0.0.1-SNAPSHOT.jar faces_recognition-0.0.1-SNAPSHOT.jar
+ENTRYPOINT ["java","-jar","faces_recognition-0.0.1-SNAPSHOT.jar"]
