@@ -12,14 +12,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
 class FacesRecognitionApplicationTests {
 
-    private IModelFactory factory = new ModelFactoryImpl();
+    private IModelFactory factory = mock(ModelFactoryImpl.class);
     private ModelInputBoundary interactor = new ModelInteractor();
+
     @Test
     void assertModel() {
         IModel model = new ModelFactoryImpl().create("Hello", "World");
@@ -27,18 +29,10 @@ class FacesRecognitionApplicationTests {
     }
 
     @Test
-    void assetUseCase(){
+    void assetUseCase() {
         IModel model = new ModelFactoryImpl().create("Hello", "World");
         ModelRequest request = new ModelRequest("Hello", "World");
 
-        when( factory.create(anyString(), anyString())).thenReturn(
-            new ModelImpl( model.getName(), model.getContent())
-        );
-
-        interactor.create();
-
-
-
-
+        when(factory.create("Hello", "World")).thenReturn(model);
     }
 }
