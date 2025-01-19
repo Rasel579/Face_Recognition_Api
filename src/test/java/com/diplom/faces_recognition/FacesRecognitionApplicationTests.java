@@ -35,7 +35,7 @@ class FacesRecognitionApplicationTests {
             new ModelImpl( model.getName(), model.getContent())
         );
 
-        interactor.create(request);
+        interactor.create();
 
 
 
