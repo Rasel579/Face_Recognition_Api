@@ -31,8 +31,6 @@ class FacesRecognitionApplicationTests {
     @Test
     void assetUseCase() {
         IModel model = new ModelFactoryImpl().create("Hello", "World");
-        ModelRequest request = new ModelRequest("Hello", "World");
-
         when(factory.create("Hello", "World")).thenReturn(model);
     }
 }
