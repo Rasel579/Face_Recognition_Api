@@ -1,5 +1,5 @@
 # Используем базовый образ с Maven и JDK
-FROM maven:3.8.6-openjdk-17 AS build
+FROM maven:3-openjdk-18-slim AS build
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
@@ -12,7 +12,7 @@ COPY pom.xml /app
 RUN mvn clean package -DskipTests
 
 # Используем базовый образ с JRE для запуска приложения
-FROM openjdk:17-jre-slim
+FROM openjdk:11-ea-17-jre-slim
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
