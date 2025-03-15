@@ -12,7 +12,7 @@ COPY pom.xml /app
 RUN mvn clean package -DskipTests
 
 # Используем базовый образ с JRE для запуска приложения
-FROM openjdk:11-ea-17-jre-slim
+FROM openjdk-18-slim
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
