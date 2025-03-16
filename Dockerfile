@@ -18,7 +18,7 @@ FROM openjdk:11-ea-17-jre-slim
 WORKDIR /app
 
 # Копируем собранный JAR-файл из этапа сборки
-COPY --from=build /app/target/FaceRecognitionApi.jar /app/FaceRecognitionApi.jar
+COPY --from=build /app/target/faces_recognition-0.0.1-SNAPSHOT.jar /app/faces_recognition-0.0.1-SNAPSHOT.jar
 
 # Открываем порт, который использует приложение
 EXPOSE 8080
