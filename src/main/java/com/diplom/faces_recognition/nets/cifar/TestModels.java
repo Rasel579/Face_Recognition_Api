@@ -4,8 +4,6 @@ package com.diplom.faces_recognition.nets.cifar;
 import com.diplom.faces_recognition.nets.cifar.contract.IMagePreProcess;
 import com.diplom.faces_recognition.utils.ImageUtils;
 import com.diplom.faces_recognition.utils.log.ILog;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.util.ModelSerializer;
@@ -142,13 +140,50 @@ public class TestModels {
         return embeddings;
     }
 
-    @AllArgsConstructor
-    @Data
     static class TestResult {
         String model;
         int wrongPredictionInOneClassSequentially;
         int wrongPredictionsInOtherClasses;
         int total;
+
+        public TestResult(String model, int wrongPredictionInOneClassSequentially, int total, int wrongPredictionsInOtherClasses) {
+            this.model = model;
+            this.wrongPredictionInOneClassSequentially = wrongPredictionInOneClassSequentially;
+            this.total = total;
+            this.wrongPredictionsInOtherClasses = wrongPredictionsInOtherClasses;
+        }
+
+        public String getModel() {
+            return model;
+        }
+
+        public void setModel(String model) {
+            this.model = model;
+        }
+
+        public int getWrongPredictionInOneClassSequentially() {
+            return wrongPredictionInOneClassSequentially;
+        }
+
+        public void setWrongPredictionInOneClassSequentially(int wrongPredictionInOneClassSequentially) {
+            this.wrongPredictionInOneClassSequentially = wrongPredictionInOneClassSequentially;
+        }
+
+        public int getWrongPredictionsInOtherClasses() {
+            return wrongPredictionsInOtherClasses;
+        }
+
+        public void setWrongPredictionsInOtherClasses(int wrongPredictionsInOtherClasses) {
+            this.wrongPredictionsInOtherClasses = wrongPredictionsInOtherClasses;
+        }
+
+        public int getTotal() {
+            return total;
+        }
+
+        public void setTotal(int total) {
+            this.total = total;
+        }
     }
 
     ;
