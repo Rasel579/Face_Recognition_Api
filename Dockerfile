@@ -17,11 +17,15 @@ FROM openjdk:11-ea-17-jre-slim
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем собранный JAR-файл из этапа сборки
-COPY --from=build /app/target/faces_recognition-0.0.1-SNAPSHOT.jar /app/faces_recognition-0.0.1-SNAPSHOT.jar
+# Создаем пользователя и группу для безопасности
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
 
-# Открываем порт, который использует приложение
-EXPOSE 8080
+# Указываем путь к JAR-файлу
+ARG JAR_FILE=target/*.jar
+
+# Копируем JAR-файл в контейнер
+COPY ${JAR_FILE} app.jar
 
 # Команда для запуска приложения
-ENTRYPOINT ["java", "-jar", "faces_recognition-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
