@@ -12,7 +12,7 @@ COPY pom.xml /app
 RUN mvn clean package -DskipTests
 
 # Используем базовый образ с JRE для запуска приложения
-FROM openjdk:11-ea-17-jre-slim
+FROM amazoncorretto:17.0.14-al2023
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
