@@ -1,7 +1,7 @@
 package com.diplom.faces_recognition.utils.log;
 
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggerImpl implements ILog {
 
