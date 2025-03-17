@@ -185,6 +185,4 @@ public class TestModels {
             this.total = total;
         }
     }
-
-    ;
 }
