@@ -24,4 +24,4 @@ COPY --from=build /app/target/faces_recognition-0.0.1-SNAPSHOT.jar /app/faces_re
 EXPOSE 8080
 
 # Команда для запуска приложения
-ENTRYPOINT ["java", "-jar", "my-app.jar"]
+ENTRYPOINT ["java", "-jar", "faces_recognition-0.0.1-SNAPSHOT.jar"]

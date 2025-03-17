@@ -5,10 +5,11 @@ import com.diplom.faces_recognition.entity.IModelFactory;
 import com.diplom.faces_recognition.entity.ModelFactoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
 
 
 @SpringBootTest
@@ -25,6 +26,6 @@ class FacesRecognitionApplicationTests {
     @Test
     void assetUseCase() {
         IModel model = new ModelFactoryImpl().create("Hello", "World");
-        when(factory.create("Hello", "World")).thenReturn(model);
+        Mockito.when(factory.create("Hello", "World")).thenReturn(model);
     }
 }
