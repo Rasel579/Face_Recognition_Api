@@ -40,7 +40,7 @@ import java.util.Random;
 
 public class YOLOPretrained {
     private static final long seed = 12345;
-    private static final String TRAIN_PATH = "./src/main/resources/static/yolo2_dl4j_inference.v11724589511596.zip";
+    private static final String TRAIN_PATH = "./src/main/resources/static/yolo2_dl4j_inference.v1.zip";
     private static final String TRAINED_PATH = "./src/main/resources/static/yolo2_dl4j_inference.v1";
     private static final String TRAIN_DATA_VOC = "D:/downloads/Microsoft_COCO.v2-raw-voc/short_train";
     private static final String TEST_DATA_VOC = "D:/downloads/Microsoft_COCO.v2-raw-voc/short_valid";
