@@ -20,6 +20,9 @@ WORKDIR /app
 # Копируем собранный JAR-файл из этапа сборки
 COPY --from=build /app/target/faces_recognition-0.0.1-SNAPSHOT.jar /app/faces_recognition-0.0.1-SNAPSHOT.jar
 
+COPY --from=build /app/src/main/resources/ /app/src/main/resources/
+
+
 # Открываем порт, который использует приложение
 EXPOSE 8080
 
