@@ -3,7 +3,7 @@ package com.diplom.faces_recognition.dao.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users", schema = "test_schema")
+@Table(name = "users", schema = "face_db")
 public class ModelMapper {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
