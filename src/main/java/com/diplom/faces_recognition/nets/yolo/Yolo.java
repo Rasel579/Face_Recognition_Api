@@ -95,7 +95,7 @@ public class Yolo extends AbstractObjDetectionNet {
 
     private void warmUp(ComputationGraph model) throws IOException {
         Yolo2OutputLayer outputLayer = (Yolo2OutputLayer) model.getOutputLayer(0);
-        BufferedImage read = ImageIO.read(new File("./src/main/resources/static/sample.jpg"));
+        BufferedImage read = ImageIO.read(new File("./src/main/resources/sample.jpg"));
         INDArray indArray = loader.asMatrix(read);
         indArray = prepareImage(indArray);
         INDArray results = model.outputSingle(indArray);

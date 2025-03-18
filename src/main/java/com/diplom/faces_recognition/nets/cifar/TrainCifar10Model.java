@@ -107,7 +107,7 @@ public class TrainCifar10Model extends AbstractCifarNetModel implements Serializ
                 .build();
         logger.info(cifar10Model.summary());
 
-        File rootDir = new File("./src/main/resources/static/vgg16/train_from_video_" + NUM_POSSIBLE_LABELS);
+        File rootDir = new File("./src/main/resources/vgg16/train_from_video_" + NUM_POSSIBLE_LABELS);
         if (!rootDir.exists() && !rootDir.mkdir()) {
             logger.error(rootDir.getName() + " Not created");
         }

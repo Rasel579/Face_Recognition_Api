@@ -47,6 +47,6 @@ public abstract class AbstractObjDetectionNet implements IObjDetectionNet {
     protected final Map<String, ComputationGraph> modelsMap = new ConcurrentHashMap<>();
     protected NativeImageLoader loader;
 
-    protected static final String BASE = "./src/main/resources/static/";
+    protected static final String BASE = "./src/main/resources/";
 
 }
