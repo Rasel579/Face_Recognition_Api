@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class TestModels {
-    private static final String BASE = "./src/main/resources/models/";
+    private static final String BASE = "./src/main/resources/";
     private static final String TEST_DATA = "./test_data";
     private static final double THRESHOLD = 0.85;
 

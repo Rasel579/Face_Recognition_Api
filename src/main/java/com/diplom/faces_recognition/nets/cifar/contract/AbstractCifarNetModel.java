@@ -17,7 +17,7 @@ public abstract class AbstractCifarNetModel implements ICifarNetModel {
     protected static final int E_BATCH_SIZE = 256;
     protected static final NativeImageLoader LOADER = new NativeImageLoader(ImageUtils.HEIGHT, ImageUtils.WIDTH, 3);
     protected static final String CONTENT_LAYER_NAME = "embeddings";
-    protected static final String MODEL_SAVE_PATH = "./src/main/resources/models/";
+    protected static final String MODEL_SAVE_PATH = "./src/main/resources/";
     protected static final int SAVE_INTERVAL = 50;
     protected static final int TEST_INTERVAL = 5;
     protected static final int EPOCH_INTERVAL = 10;
