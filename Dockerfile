@@ -27,4 +27,4 @@ COPY --from=build /app/src/main/resources/ /app/src/main/resources/
 EXPOSE 8080
 
 # Команда для запуска приложения
-ENTRYPOINT ["java", "-jar", "faces_recognition-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-Xms512m", "-Xmx2048m", "-jar", "faces_recognition-0.0.1-SNAPSHOT.jar"]
