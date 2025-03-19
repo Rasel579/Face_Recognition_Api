@@ -1,0 +1,29 @@
+version: '0.1'
+
+networks:
+  face_cluster:
+    driver: bridge
+
+services:
+  api:
+    image: face-recognition-api:latest
+    container_name: face_rec
+    ports:
+      8080:8081
+    volumes:
+      -${DATA_PATH}: /app/data
+    networks:
+      - face_cluster
+    depends_on:
+      - postgres_db
+
+  postgres_db:
+    image: postgres:latest
+    container_name: postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - face_cluster
+
+volumes:
+  postgres_data:
