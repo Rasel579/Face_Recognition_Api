@@ -1,5 +1,6 @@
 package com.diplom.faces_recognition.nets.yolo;
 
+import com.diplom.faces_recognition.Constants;
 import com.diplom.faces_recognition.nets.yolo.evaluations.YoloEvaluations;
 import com.diplom.faces_recognition.utils.yolo.Speed;
 import org.datavec.api.split.FileSplit;
@@ -40,8 +41,8 @@ import java.util.Random;
 
 public class YOLOPretrained {
     private static final long seed = 12345;
-    private static final String TRAIN_PATH = "./src/main/resources/yolo2_dl4j_inference.v1.zip";
-    private static final String TRAINED_PATH = "./src/main/resources/yolo2_dl4j_inference.v1";
+    private static final String TRAIN_PATH = System.getenv(Constants.RESOURCES_ENV) + "yolo2_dl4j_inference.v1.zip";
+    private static final String TRAINED_PATH = System.getenv(Constants.RESOURCES_ENV) + "yolo2_dl4j_inference.v1";
     private static final String TRAIN_DATA_VOC = "D:/downloads/Microsoft_COCO.v2-raw-voc/short_train";
     private static final String TEST_DATA_VOC = "D:/downloads/Microsoft_COCO.v2-raw-voc/short_valid";
 
@@ -54,7 +55,7 @@ public class YOLOPretrained {
     private static final double LEARNING_RATE_MOMENTUM = 0.9;
 
     public static ComputationGraph initPretrained() throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException {
-        String filename = "./src/main/resources/yolo.h5";
+        String filename = System.getenv(Constants.RESOURCES_ENV) + "yolo.h5";
         KerasLayer.registerCustomLayer("Lambda", KerasSpaceToDepth.class);
         ComputationGraph graph = KerasModelImport.importKerasModelAndWeights(filename, false);
         INDArray priors = Nd4j.create(priorBoxes).castTo(DataType.FLOAT);

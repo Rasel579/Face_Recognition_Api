@@ -1,5 +1,6 @@
 package com.diplom.faces_recognition.nets.facerecognition.contract;
 
+import com.diplom.faces_recognition.Constants;
 import com.diplom.faces_recognition.utils.log.ILog;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.learning.config.IUpdater;
@@ -19,5 +20,5 @@ public abstract class AbstractFaceNetModel implements IFaceNet {
 
     protected static final int BATCH_SIZE = 10;
     protected static final int EPOCH_NUM = 10;
-    protected static final String SAVE_PATH = "./src/main/resources/trained_face_recon_model.zip";
+    protected static final String SAVE_PATH = System.getenv(Constants.RESOURCES_ENV) + "trained_face_recon_model.zip";
 }

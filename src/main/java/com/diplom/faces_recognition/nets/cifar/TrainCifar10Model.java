@@ -1,5 +1,6 @@
 package com.diplom.faces_recognition.nets.cifar;
 
+import com.diplom.faces_recognition.Constants;
 import com.diplom.faces_recognition.nets.cifar.contract.AbstractCifarNetModel;
 import com.diplom.faces_recognition.utils.ImageUtils;
 import com.diplom.faces_recognition.utils.log.ILog;
@@ -107,7 +108,7 @@ public class TrainCifar10Model extends AbstractCifarNetModel implements Serializ
                 .build();
         logger.info(cifar10Model.summary());
 
-        File rootDir = new File("./src/main/resources/train_from_video_" + NUM_POSSIBLE_LABELS);
+        File rootDir = new File(System.getenv(Constants.RESOURCES_ENV) + "train_from_video_" + NUM_POSSIBLE_LABELS);
         if (!rootDir.exists() && !rootDir.mkdir()) {
             logger.error(rootDir.getName() + " Not created");
         }

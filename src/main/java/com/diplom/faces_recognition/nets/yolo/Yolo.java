@@ -1,5 +1,6 @@
 package com.diplom.faces_recognition.nets.yolo;
 
+import com.diplom.faces_recognition.Constants;
 import com.diplom.faces_recognition.entity.netmodel.INetFrame;
 import com.diplom.faces_recognition.models.GenericResponse;
 import com.diplom.faces_recognition.models.MarkedObject;
@@ -95,7 +96,7 @@ public class Yolo extends AbstractObjDetectionNet {
 
     private void warmUp(ComputationGraph model) throws IOException {
         Yolo2OutputLayer outputLayer = (Yolo2OutputLayer) model.getOutputLayer(0);
-        BufferedImage read = ImageIO.read(new File("./src/main/resources/sample.jpg"));
+        BufferedImage read = ImageIO.read(new File(System.getenv(Constants.RESOURCES_ENV) + "sample.jpg"));
         INDArray indArray = loader.asMatrix(read);
         indArray = prepareImage(indArray);
         INDArray results = model.outputSingle(indArray);
