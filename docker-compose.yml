@@ -1,4 +1,4 @@
-version: '0.1'
+version: '3.8'
 
 networks:
   face_cluster:
@@ -11,7 +11,7 @@ services:
     ports:
       8080:8081
     volumes:
-      -${DATA_PATH}: /app/data
+      -${DATA_PATH}:/app/data
     networks:
       - face_cluster
     depends_on:
