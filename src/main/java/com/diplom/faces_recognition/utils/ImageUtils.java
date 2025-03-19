@@ -1,6 +1,7 @@
 package com.diplom.faces_recognition.utils;
 
 
+import com.diplom.faces_recognition.Constants;
 import com.diplom.faces_recognition.nets.cifar.CifarImagePreProcessor;
 import com.diplom.faces_recognition.utils.yolo.Speed;
 import org.bytedeco.opencv.global.opencv_imgcodecs;
@@ -60,7 +61,7 @@ public class ImageUtils {
         BufferedImage subImage = image.getSubimage((int)tx, (int)ty, (int)(width*wPixelPerGrid), (int)(height*hPixelPerGrid));
 
         if (writeCropImageIntoDisk){
-            ImageIO.write(subImage, "jpg",  new File("./src/main/resources/video_frames" + System.currentTimeMillis() + ".jpg"));
+            ImageIO.write(subImage, "jpg",  new File(System.getenv(Constants.RESOURCES_ENV) + "video_frames" + System.currentTimeMillis() + ".jpg"));
         }
 
         return subImage;

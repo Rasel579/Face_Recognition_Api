@@ -1,6 +1,7 @@
 package com.diplom.faces_recognition.nets.cifar;
 
 
+import com.diplom.faces_recognition.Constants;
 import com.diplom.faces_recognition.nets.cifar.contract.IMagePreProcess;
 import com.diplom.faces_recognition.utils.ImageUtils;
 import com.diplom.faces_recognition.utils.log.ILog;
@@ -18,7 +19,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class TestModels {
-    private static final String BASE = "./src/main/resources/";
+    private static final String BASE = System.getenv(Constants.RESOURCES_ENV);
     private static final String TEST_DATA = "./test_data";
     private static final double THRESHOLD = 0.85;
 

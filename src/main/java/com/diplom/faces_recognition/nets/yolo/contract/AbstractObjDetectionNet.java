@@ -1,5 +1,6 @@
 package com.diplom.faces_recognition.nets.yolo.contract;
 
+import com.diplom.faces_recognition.Constants;
 import com.diplom.faces_recognition.models.MarkedObject;
 import com.diplom.faces_recognition.nets.cifar.contract.AbstractCifarNetModel;
 import com.diplom.faces_recognition.nets.facerecognition.contract.IFaceRecognize;
@@ -47,6 +48,6 @@ public abstract class AbstractObjDetectionNet implements IObjDetectionNet {
     protected final Map<String, ComputationGraph> modelsMap = new ConcurrentHashMap<>();
     protected NativeImageLoader loader;
 
-    protected static final String BASE = "./src/main/resources/";
+    protected static final String BASE = System.getenv(Constants.RESOURCES_ENV);
 
 }

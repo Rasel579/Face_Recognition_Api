@@ -1,5 +1,6 @@
 package com.diplom.faces_recognition.nets.cifar.contract;
 
+import com.diplom.faces_recognition.Constants;
 import com.diplom.faces_recognition.utils.ImageUtils;
 import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.nn.graph.ComputationGraph;
@@ -17,7 +18,7 @@ public abstract class AbstractCifarNetModel implements ICifarNetModel {
     protected static final int E_BATCH_SIZE = 256;
     protected static final NativeImageLoader LOADER = new NativeImageLoader(ImageUtils.HEIGHT, ImageUtils.WIDTH, 3);
     protected static final String CONTENT_LAYER_NAME = "embeddings";
-    protected static final String MODEL_SAVE_PATH = "./src/main/resources/";
+    protected static final String MODEL_SAVE_PATH = System.getenv(Constants.RESOURCES_ENV);
     protected static final int SAVE_INTERVAL = 50;
     protected static final int TEST_INTERVAL = 5;
     protected static final int EPOCH_INTERVAL = 10;

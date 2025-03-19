@@ -1,5 +1,6 @@
 package com.diplom.faces_recognition.nets.facerecognition;
 
+import com.diplom.faces_recognition.Constants;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.conf.ComputationGraphConfiguration;
 import org.deeplearning4j.nn.conf.ConvolutionMode;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class FaceNetUtils {
-    static final String BASE = "./src/main/resources/face";
+    static final String BASE = System.getenv(Constants.RESOURCES_ENV) + "face";
 
     static ActivationLayer relu() {
         return new ActivationLayer.Builder().activation(Activation.RELU).build();
