@@ -88,5 +88,7 @@ services:
       - api-worker-1
       - api-worker-2
       - api-worker-3
+    volumes:
+      - ${SSL_PATH}:./ssl
 volumes:
   postgres_data:
