@@ -5,11 +5,9 @@ networks:
     driver: bridge
 
 services:
-  api:
+  api-worker-1:
     image: face-recognition-api:latest
-    container_name: face_rec
-    ports:
-      - 8080:8081
+    container_name: face_rec-1
     volumes:
       - ${DATA_PATH}:/app/data
     networks:
@@ -23,6 +21,46 @@ services:
       RESOURCES: ${RESOURCES}
     depends_on:
       - postgres_db
+    expose:
+      - 80
+
+  api-worker-2:
+    image: face-recognition-api:latest
+    container_name: face_rec-2
+    volumes:
+      - ${DATA_PATH}:/app/data
+    networks:
+      - face_cluster
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_URL: ${POSTGRES_URL}
+      RESOURCES: ${RESOURCES}
+    depends_on:
+      - postgres_db
+    expose:
+      - 80
+
+  api-worker-3:
+    image: face-recognition-api:latest
+    container_name: face_rec-3
+    volumes:
+      - ${DATA_PATH}:/app/data
+    networks:
+      - face_cluster
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_URL: ${POSTGRES_URL}
+      RESOURCES: ${RESOURCES}
+    depends_on:
+      - postgres_db
+    expose:
+      -80
 
   postgres_db:
     image: postgres:latest
@@ -36,5 +74,14 @@ services:
     networks:
       - face_cluster
 
+  nginx:
+    build: /Dockerfile.nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - face_cluster
+    expose:
+      - 80
 volumes:
   postgres_data:
