@@ -75,7 +75,9 @@ services:
       - face_cluster
 
   nginx:
-    dockerfile: Dockerfile.nginx
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     ports:
       - "80:80"
       - "443:443"
