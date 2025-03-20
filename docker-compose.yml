@@ -1,4 +1,3 @@
-version: '3.8'
 
 networks:
   face_cluster:
@@ -85,5 +84,9 @@ services:
       - face_cluster
     expose:
       - 80
+    depends_on:
+      - api-worker-1
+      - api-worker-2
+      - api-worker-3
 volumes:
   postgres_data:
