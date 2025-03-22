@@ -29,7 +29,7 @@ services:
     networks:
       - face_cluster
     ports:
-      - "8081:8081"
+      - "8082:8081"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -57,7 +57,7 @@ services:
       context: .
       dockerfile: Dockerfile.nginx
     ports:
-      - "8080:8080"
+      - "80:80"
       - "443:443"
     networks:
       - face_cluster
