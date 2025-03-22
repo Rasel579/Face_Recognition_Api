@@ -21,7 +21,7 @@ services:
     depends_on:
       - postgres_db
     expose:
-      - 80
+      - 8081
 
   api-worker-2:
     image: face-recognition-api:latest
@@ -40,7 +40,7 @@ services:
     depends_on:
       - postgres_db
     expose:
-      - 80
+      - 8081
 
   postgres_db:
     image: postgres:latest
