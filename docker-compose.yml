@@ -20,8 +20,6 @@ services:
       RESOURCES: ${RESOURCES}
     depends_on:
       - postgres_db
-    expose:
-      - 8081
 
   api-worker-2:
     image: face-recognition-api:latest
@@ -39,8 +37,6 @@ services:
       RESOURCES: ${RESOURCES}
     depends_on:
       - postgres_db
-    expose:
-      - 8081
 
   postgres_db:
     image: postgres:latest
@@ -63,8 +59,6 @@ services:
       - "443:443"
     networks:
       - face_cluster
-    expose:
-      - 80
     depends_on:
       - api-worker-1
       - api-worker-2
