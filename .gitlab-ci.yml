@@ -1,0 +1,43 @@
+stages:
+  - test
+  - build
+  - deploy
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+
+services:
+  - docker:dind
+
+before_script:
+  - echo "Устанавливаем зависимости и настраиваем окружение"
+  - docker-compose down || true  # Останавливаем все запущенные контейнеры
+
+
+run_tests:
+  stage: test
+  script:
+    - echo "Запуск тестов"
+    - docker build -t face-recognition-api .
+    - docker run --env-file ${CONFIG_PATH} --name face_rec faces-recognition-api
+    - docker exec face_rec mvn test
+    - echo "Тестирование завершено"
+    - docker stop face_rec
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+
+build_job:
+  stage: build
+  script:
+    - echo "Поднятие контейнеров"
+    - docker-compose --env-file ${CONFIG_PATH} up -d
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+
+deploy_job:
+  stage: deploy
+  script:
+    - echo "Контейнеры подняты"
+    - echo "Инфраструктура развернута"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
