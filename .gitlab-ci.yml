@@ -3,41 +3,57 @@ stages:
   - build
   - deploy
 variables:
-  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_HOST: unix:///var/run/docker.sock
   DOCKER_DRIVER: overlay2
 
-services:
-  - docker:dind
-
 before_script:
+  - echo "Старт CI"
   - echo "Устанавливаем зависимости и настраиваем окружение"
-  - docker-compose down || true  # Останавливаем все запущенные контейнеры
+  - docker-compose down || true
+  - chmod +x ./scripts/notification.sh
 
+after_script:
+  - docker rmi maven:3-openjdk-17 || true
 
 run_tests:
   stage: test
+  image: maven:3-openjdk-17
   script:
     - echo "Запуск тестов"
-    - docker build -t face-recognition-api .
-    - docker run --env-file ${CONFIG_PATH} --name face_rec faces-recognition-api
-    - docker exec face_rec mvn test
-    - echo "Тестирование завершено"
-    - docker stop face_rec
+    - mvn test -DPOSTGRES_URL=jdbc:postgresql://postgres_db:5432/test_db
+    - echo "Тестирование завершено!"
+  after_script:
+    - ./scripts/notification.sh
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
 
 build_job:
   stage: build
+  image: docker:latest
+  before_script:
+    docker stop face_rec-1 || true
+    docker rm face_rec-1 || true
+    docker stop face_rec-2 || true
+    docker rm face_rec-2 || true
+    docker rmi face-recognition-api || true
   script:
     - echo "Поднятие контейнеров"
+    - docker build -t face-recognition-api .
     - docker-compose --env-file ${CONFIG_PATH} up -d
+  after_script:
+    - apk add --no-cache curl
+    - sh ./scripts/notification.sh
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
 
 deploy_job:
   stage: deploy
+  image: alpine:latest
   script:
     - echo "Контейнеры подняты"
     - echo "Инфраструктура развернута"
+  after_script:
+    - apk add --no-cache curl
+    - sh ./scripts/notification.sh
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
