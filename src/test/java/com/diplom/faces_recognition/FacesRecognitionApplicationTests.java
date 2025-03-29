@@ -5,14 +5,14 @@ import com.diplom.faces_recognition.entity.IModelFactory;
 import com.diplom.faces_recognition.entity.ModelFactoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import static org.mockito.Mockito.mock;
 
 
 
-@SpringBootTest
+@RunWith(JUnit4.class)
 class FacesRecognitionApplicationTests {
 
     private IModelFactory factory = mock(ModelFactoryImpl.class);
