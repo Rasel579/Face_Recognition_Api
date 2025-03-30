@@ -5,7 +5,6 @@ stages:
 variables:
   DOCKER_HOST: unix:///var/run/docker.sock
   DOCKER_DRIVER: overlay2
-  MAVEN_OPTS: "-Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository"
 
 cache:
   key: "maven-repo-${CI_COMMIT_REF_SLUG}"
