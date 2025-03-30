@@ -15,7 +15,8 @@ import static org.mockito.Mockito.mock;
 @RunWith(JUnit4.class)
 class FacesRecognitionApplicationTests {
 
-    private IModelFactory factory = mock(ModelFactoryImpl.class);
+    private final IModelFactory factory = mock(ModelFactoryImpl.class);
+
 
     @Test
     void assertModel() {
