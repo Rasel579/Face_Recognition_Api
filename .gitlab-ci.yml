@@ -12,7 +12,7 @@ cache:
     - .m2/repository/
 
 before_script:
-  - echo "Старт CI"
+  - echo "Старт CI "
   - echo "Устанавливаем зависимости и настраиваем окружение и cache"
   - docker-compose down || true
   - chmod +x ./scripts/notification.sh
