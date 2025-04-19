@@ -4,10 +4,12 @@ stages:
   - build
   - deploy
 variables:
-  DOCKER_HOST: unix:///var/run/docker.sock
   DOCKER_DRIVER: overlay2
   MAVEN_OPTS: "-Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository"
   CLUSTER_NAME: "face-rec-cluster"
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  KUBECONFIG: "${CI_PROJECT_DIR}/kubeconfig.yaml"
 
 cache:
   key: "maven-repo-${CI_COMMIT_REF_SLUG}"
@@ -37,7 +39,9 @@ run_tests:
 
 setup_kind_cluster:
   stage: setup
-  image: docker:latest
+  image: docker:24.0
+  services:
+    - docker:24.0-dind
   script:
     - apk add --no-cache kind kubectl
     - >
