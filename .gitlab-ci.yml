@@ -7,8 +7,6 @@ variables:
   DOCKER_DRIVER: overlay2
   MAVEN_OPTS: "-Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository"
   CLUSTER_NAME: "face-rec-cluster"
-  DOCKER_TLS_CERTDIR: "/certs"
-  DOCKER_TLS_VERIFY: "1"
   DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
 
 cache:
