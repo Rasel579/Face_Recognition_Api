@@ -42,6 +42,11 @@ setup_kind_cluster:
   image: docker:24.0
   services:
     - docker:24.0-dind
+  before_script:
+    - apk add --no-cache curl docker-cli kubectl
+    - curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+    - chmod +x ./kind
+    - mv ./kind /usr/local/bin/kind
   script:
     - apk add --no-cache kind kubectl
     - >
@@ -52,7 +57,6 @@ setup_kind_cluster:
       fi
     - kubectl cluster-info --context kind-$CLUSTER_NAME
   after_script:
-    - apk add --no-cache curl
     - sh ./scripts/notification.sh
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
