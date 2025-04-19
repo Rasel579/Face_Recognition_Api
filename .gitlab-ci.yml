@@ -55,8 +55,11 @@ build_job:
 deploy_job:
   stage: deploy
   image: docker:latest
+  services:
+    - docker:24.0-dind
   script:
     - apk add --no-cache curl kind kubectl
+    - kubectl cluster-info
     - kubectl apply -f k8s/namespace.yaml
     - |
       cat <<EOF | kubectl apply -f -
