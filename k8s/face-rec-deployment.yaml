@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: face-rec-app
+  namespace: face-rec-ns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: face-rec-app
+  template:
+    metadata:
+      labels:
+         app: face-rec-app
+    spec:
+      containers:
+        - name: face-rec-app
+          image: face-recognition-api
+          ports:
+            - containerPort: 80
+          env:
+            - name: DATA_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: face-rec-secrets
+                  key: DATA_PATH
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: face-rec-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: face-rec-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: face-rec-secrets
+                  key: POSTGRES_DB
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: face-rec-secrets
+                  key: POSTGRES_PORT
+            - name: POSTGRES_URL
+              valueFrom:
+                secretKeyRef:
+                  name: face-rec-secrets
+                  key: POSTGRES_URL
+            - name: RESOURCES
+              valueFrom:
+                secretKeyRef:
+                  name: face-rec-secrets
+                  key: RESOURCES
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: face-rec-app
+  namespace: face-rec-ns
+spec:
+  selector:
+    app: face-rec-app
+  ports:
+    protocol: TCP
+    port: 80
+    targetPort: 80
+
+

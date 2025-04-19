@@ -43,9 +43,13 @@ build_job:
     docker rm face_rec-2 || true
     docker rmi face-recognition-api || true
   script:
-    - echo "Поднятие контейнеров"
+    - echo "Разворачиваем k8s"
     - docker build -t face-recognition-api .
-    - docker-compose --env-file ${CONFIG_PATH} up -d
+    - kubectl apply -f k8s/namespace.yaml
+    - kubectl apply -f k8s/postgres-pvc.yaml
+    - kubectl apply -f k8s/postgres-deployment.yaml
+    - kubectl apply -f k8s/face-rec-deployment.yaml
+    - kubectl apply -f k8s/ingress-face-rec.yaml
   after_script:
     - apk add --no-cache curl
     - sh ./scripts/notification.sh
