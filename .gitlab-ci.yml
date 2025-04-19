@@ -35,23 +35,6 @@ run_tests:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
 
-setup_kind_cluster:
-  stage: setup
-  image: docker:latest
-  script:
-    - apk add --no-cache curl kind kubectl
-    - >
-      if ! kind get clusters | grep $CLUSTER_NAME; then
-        echo "Создаем кластер face-rec-cluster..."
-        kind create cluster --name $CLUSTER_NAME --config k8s/cluster-config.yaml
-        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-      fi
-    - kubectl cluster-info --context kind-$CLUSTER_NAME
-  after_script:
-    - sh ./scripts/notification.sh
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
-
 build_job:
   stage: build
   image: docker:latest
@@ -64,7 +47,6 @@ build_job:
   script:
     - echo "Разворачиваем k8s"
     - docker build -t face-recognition-api .
-    - kind load docker-image my-app:latest --name $CLUSTER_NAME
   after_script:
     - apk add --no-cache curl
     - sh ./scripts/notification.sh
@@ -73,7 +55,7 @@ build_job:
 
 deploy_job:
   stage: deploy
-  image: bitnami/kubectl:latest
+  image: docker:latest
   script:
     - kubectl apply -f k8s/namespace.yaml
     - |
