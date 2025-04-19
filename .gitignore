@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 ./src/main/resources/static/yolo.h5
 ./src/main/resources/static/yolo2_dl4j_inference.v1.zip
+/k8s/secrets.yaml
 ### STS ###
 .apt_generated
 .classpath
