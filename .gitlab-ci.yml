@@ -8,6 +8,7 @@ variables:
   DOCKER_DRIVER: overlay2
   MAVEN_OPTS: "-Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository"
   CLUSTER_NAME: "face-rec-cluster"
+  KUBECONFIG: "${CI_PROJECT_DIR}/kubeconfig.yaml"
 
 cache:
   key: "maven-repo-${CI_COMMIT_REF_SLUG}"
@@ -63,9 +64,12 @@ deploy_job:
       if ! kind get clusters | grep -q "face-rec-cluster"; then
         echo "Создаем кластер face-rec-cluster...."
         kind create cluster --name $CLUSTER_NAME --config k8s/cluster-config.yaml
+        kind export kubeconfig --name $CLUSTER_NAME
         kubectl cluster-info
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
         kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=300s
+      else
+        kind export kubeconfig --name $CLUSTER_NAME
       fi
     - kubectl cluster-info
     - kubectl apply -f k8s/namespace.yaml
