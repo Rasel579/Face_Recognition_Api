@@ -45,7 +45,7 @@ setup_kind_cluster:
     - >
       if ! kind get clusters | grep -q "face-rec-cluster"; then
         echo "Создаем кластер face-rec-cluster..."
-        kind create cluster --name $CLUSTER_NAME --config=./k8s/kind-config.yaml
+        kind create cluster --name $CLUSTER_NAME --config k8s/cluster-config.yaml
       fi
     - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
     - kubectl cluster-info --context kind-${CLUSTER_NAME}
