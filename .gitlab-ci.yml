@@ -42,7 +42,7 @@ setup_kind_cluster:
     - docker:dind
   script:
     - apk add --no-cache kind kubectl
-    - kind create cluster --name ${CLUSTER_NAME} --config cluster-config.yaml
+    - kind create cluster --name ${CLUSTER_NAME} --config k8s/cluster-config.yaml
     - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
     - kubectl cluster-info --context kind-${CLUSTER_NAME}
   after_script:
