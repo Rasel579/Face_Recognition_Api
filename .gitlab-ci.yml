@@ -38,8 +38,6 @@ run_tests:
 setup_kind_cluster:
   stage: setup
   image: docker:latest
-  services:
-    - docker:dind
   script:
     - apk add --no-cache kind kubectl
     - >
@@ -58,8 +56,6 @@ setup_kind_cluster:
 build_job:
   stage: build
   image: docker:latest
-  services:
-    - docker:dind
   before_script:
     docker stop face_rec-1 || true
     docker rm face_rec-1 || true
