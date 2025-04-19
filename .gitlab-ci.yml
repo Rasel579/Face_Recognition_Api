@@ -43,7 +43,7 @@ setup_kind_cluster:
   script:
     - apk add --no-cache kind kubectl
     - >
-      if ! kind get clusters | grep -q "face-rec-cluster"; then
+      if ! kind get clusters | grep $CLUSTER_NAME; then
         echo "Создаем кластер face-rec-cluster..."
         kind create cluster --name $CLUSTER_NAME --config k8s/cluster-config.yaml
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
@@ -69,7 +69,7 @@ build_job:
   script:
     - echo "Разворачиваем k8s"
     - docker build -t face-recognition-api .
-    - kind load docker-image my-app:latest --name ${CLUSTER_NAME}
+    - kind load docker-image my-app:latest --name $CLUSTER_NAME
   after_script:
     - apk add --no-cache curl
     - sh ./scripts/notification.sh
