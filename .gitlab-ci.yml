@@ -74,6 +74,7 @@ deploy_job:
     - kubectl create secret generic face-rec-secrets -n face-rec-ns --from-env-file=${CONFIG_PATH}
     - kubectl apply -f k8s/postgres-deployment.yaml
     - kubectl apply -f k8s/face-rec-deployment.yaml
+    - kubectl wait --for=condition=ready pod -l app=face-rec-app --timeout=300s
     - kubectl apply -f k8s/ingress-face-rec.yaml
     - echo "Инфраструктура развернута"
   after_script:
