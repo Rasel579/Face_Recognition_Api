@@ -24,7 +24,7 @@ COPY --from=build /app/src/main/resources/ /app/src/main/resources/
 
 
 # Открываем порт, который использует приложение
-EXPOSE 8080
+EXPOSE 8081
 
 # Команда для запуска приложения
 ENTRYPOINT ["java", "-Xms512m", "-Xmx2048m", "-jar", "faces_recognition-0.0.1-SNAPSHOT.jar"]
