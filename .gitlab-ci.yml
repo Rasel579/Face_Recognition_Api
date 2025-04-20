@@ -58,7 +58,6 @@ deploy_job:
   image: docker:latest
   script:
     - apk add --no-cache curl
-    - kind load docker-image face-recognition-api --name face-rec-cluster
     - >
       if ! kind get clusters | grep -q "face-rec-cluster"; then
         echo "Создаем кластер face-rec-cluster..."
@@ -68,6 +67,7 @@ deploy_job:
       else
         kubectl cluster-info
       fi
+    - kind load docker-image face-recognition-api --name face-rec-cluster
     - kubectl cluster-info
     - kubectl apply -f k8s/namespace.yaml
     - |
