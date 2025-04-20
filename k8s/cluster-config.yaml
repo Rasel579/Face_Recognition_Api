@@ -6,7 +6,7 @@ nodes:
   - role: control-plane
     kubeadmConfigPatches:
       - |
-        kind: initConfiguration
+        kind: InitConfiguration
         nodeRegistration:
           kubeletExtraArgs:
             node-labels: "ingress-ready=true"
@@ -20,3 +20,4 @@ nodes:
       - hostPath: /app/data
         containerPath: /app/data
         readOnly: false
+        propagation: Bidirectional
