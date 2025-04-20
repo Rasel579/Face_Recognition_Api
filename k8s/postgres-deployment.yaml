@@ -17,8 +17,21 @@ spec:
         - name: postgres
           image: postgres:13
           envFrom:
-            - secretRef:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
                 name: face-rec-secrets
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: face-rec-secrets
+                key: POSTGRES_PASSWORD
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: face-rec-secrets
+                key: POSTGRES_DB
           ports:
             - containerPort: 5432
           volumeMounts:
