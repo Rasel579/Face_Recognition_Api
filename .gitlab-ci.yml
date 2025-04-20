@@ -71,16 +71,7 @@ deploy_job:
     - kubectl cluster-info
     - kubectl apply -f k8s/namespace.yaml
     - kubectl apply -f k8s/postgres-pvc.yaml
-    - cat > secret-values.env <<EOF
-      DATA_PATH=${DATA_PATH}
-      POSTGRES_USER=${POSTGRES_USER}
-      POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      POSTGRES_DB=${POSTGRES_DB}
-      POSTGRES_PORT=${POSTGRES_PORT}
-      POSTGRES_URL=${POSTGRES_URL}
-      RESOURCES=${RESOURCES}
-      EOF
-    - kubectl create secret generic face-rec-secrets -n face-rec-ns --from-env-file=secret-values.
+    - kubectl create secret generic face-rec-secrets -n face-rec-ns --from-env-file=${CONFIG_PATH}
     - kubectl apply -f k8s/postgres-deployment.yaml
     - kubectl apply -f k8s/face-rec-deployment.yaml
     - kubectl apply -f k8s/ingress-face-rec.yaml
