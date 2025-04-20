@@ -70,6 +70,7 @@ deploy_job:
     - kind load docker-image face-recognition-api --name face-rec-cluster
     - kubectl cluster-info
     - kubectl apply -f k8s/namespace.yaml
+    - kubectl apply -f k8s/postgres-pvc.yaml
     - |
       cat <<EOF | kubectl apply -f -
       apiVersion: v1
@@ -87,7 +88,6 @@ deploy_job:
         POSTGRES_URL: $POSTGRES_URL
         RESOURCES: $RESOURCES
       EOF
-    - kubectl apply -f k8s/postgres-pvc.yaml
     - kubectl apply -f k8s/postgres-deployment.yaml
     - kubectl apply -f k8s/face-rec-deployment.yaml
     - kubectl apply -f k8s/ingress-face-rec.yaml
