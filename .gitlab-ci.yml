@@ -62,11 +62,8 @@ deploy_job:
       if ! kind get clusters | grep -q "face-rec-cluster"; then
         echo "Создаем кластер face-rec-cluster...."
         kind create cluster --name $CLUSTER_NAME --config k8s/cluster-config.yaml
-        kind export kubeconfig --name $CLUSTER_NAME --kubeconfig $KUBECONFIG
-        sed -i 's|server:.*|server: https://'$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${CLUSTER_NAME}-control-plane)':6443|' $KUBECONFIG
         kubectl cluster-info
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-        kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=300s
       else
          kind export kubeconfig --name $CLUSTER_NAME --kubeconfig $KUBECONFIG
       fi
