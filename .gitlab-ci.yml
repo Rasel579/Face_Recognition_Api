@@ -3,12 +3,10 @@ stages:
   - build
   - deploy
 variables:
-  DOCKER_HOST: unix:///var/run/docker.sock
   DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
   MAVEN_OPTS: "-Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository"
   CLUSTER_NAME: "face-rec-cluster"
-  KUBECONFIG: "${CI_PROJECT_DIR}/kubeconfig.yaml"
 
 cache:
   key: "maven-repo-${CI_COMMIT_REF_SLUG}"
@@ -26,7 +24,7 @@ after_script:
 
 run_tests:
   stage: test
-  #image: maven:3-openjdk-17
+  image: maven:3-openjdk-17
   script:
     - echo "Запуск модульных тестов!"
     - mvn test -DPOSTGRES_URL=jdbc:postgresql://postgres_db:5432/test_db
@@ -38,7 +36,7 @@ run_tests:
 
 build_job:
   stage: build
-  #image: docker:latest
+  image: docker:latest
   before_script:
     docker stop face_rec-1 || true
     docker rm face_rec-1 || true
@@ -49,7 +47,7 @@ build_job:
     - echo "Разворачиваем k8s"
     - docker build -t face-recognition-api .
   after_script:
-    #- apk add --no-cache curl
+    - apk add --no-cache curl
     - sh ./scripts/notification.sh
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
@@ -96,7 +94,7 @@ deploy_job:
     - kubectl apply -f k8s/ingress-face-rec.yaml
     - echo "Инфраструктура развернута"
   after_script:
-    #- apk add --no-cache curl
+    - apk add --no-cache curl
     - sh ./scripts/notification.sh
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
