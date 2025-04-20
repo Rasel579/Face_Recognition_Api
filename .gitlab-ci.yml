@@ -7,6 +7,7 @@ variables:
   MAVEN_OPTS: "-Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository"
   CLUSTER_NAME: "face-rec-cluster"
   KUBECONFIG: "/builds/${CI_PROJECT_PATH}/kubeconfig.yaml"
+  DOCKER_HOST: unix:///var/run/docker.sock
 
 cache:
   key: "maven-repo-${CI_COMMIT_REF_SLUG}"
