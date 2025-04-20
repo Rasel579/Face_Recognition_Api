@@ -8,6 +8,13 @@ variables:
   CLUSTER_NAME: "face-rec-cluster"
   DOCKER_HOST: unix:///var/run/docker.sock
   KUBECONFIG: "/root/.kube/config"
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_PORT: ${POSTGRES_PORT}
+  POSTGRES_URL: ${POSTGRES_URL}
+  RESOURCES: ${RESOURCES}
+  DATA_PATH: ${DATA_PATH}
 
 cache:
   key: "maven-repo-${CI_COMMIT_REF_SLUG}"
@@ -73,13 +80,13 @@ deploy_job:
     - kubectl apply -f k8s/postgres-pvc.yaml
     - >
         kubectl create secret generic face-rec-secrets -n face-rec-ns 
-          --from-literal=DATA_PATH=${DATA_PATH} 
-          --from-literal=POSTGRES_USER=${POSTGRES_USER} 
-          --from-literal=POSTGRES_PASSWORD=${POSTGRES_PASSWORD} 
-          --from-literal=POSTGRES_DB=${POSTGRES_DB} 
-          --from-literal=POSTGRES_PORT=${POSTGRES_PORT} 
-          --from-literal=POSTGRES_URL=${POSTGRES_URL} 
-          --from-literal=RESOURCES=${RESOURCES}
+          --from-literal=DATA_PATH=$DATA_PATH 
+          --from-literal=POSTGRES_USER=$POSTGRES_USER 
+          --from-literal=POSTGRES_PASSWORD=$POSTGRES_PASSWORD 
+          --from-literal=POSTGRES_DB=$POSTGRES_DB
+          --from-literal=POSTGRES_PORT=$POSTGRES_PORT 
+          --from-literal=POSTGRES_URL=$POSTGRES_URL 
+          --from-literal=RESOURCES=$RESOURCES
     - kubectl apply -f k8s/postgres-deployment.yaml
     - kubectl apply -f k8s/face-rec-deployment.yaml
     - kubectl apply -f k8s/ingress-face-rec.yaml
