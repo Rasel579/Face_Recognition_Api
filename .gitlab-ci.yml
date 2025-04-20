@@ -16,7 +16,7 @@ cache:
 
 before_script:
   - echo "Старт CI"
-  - echo "Устанавливаем зависимости и настраиваем окружение"
+  - echo "Устанавливаем зависимости и настраиваем окружение "
   - docker-compose down || true
   - chmod +x ./scripts/notification.sh
 
