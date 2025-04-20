@@ -71,7 +71,11 @@ deploy_job:
     - kubectl cluster-info
     - kubectl apply -f k8s/namespace.yaml
     - kubectl apply -f k8s/postgres-pvc.yaml
-    - kubectl create secret generic face-rec-secrets -n face-rec-ns --from-env-file=${CONFIG_PATH}
+    - >
+      if ! kubectl get secrets -n face-rec-ns | grep -q "face-rec-secrets"; then
+        echo "Создаем scrts"
+        kubectl create secret generic face-rec-secrets -n face-rec-ns --from-env-file=${CONFIG_PATH}
+      fi
     - kubectl apply -f k8s/postgres-deployment.yaml
     - kubectl apply -f k8s/face-rec-deployment.yaml
     - kubectl wait --for=condition=ready pod -l app=face-rec-app --timeout=300s -n face-rec-ns
