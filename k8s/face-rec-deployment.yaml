@@ -16,6 +16,7 @@ spec:
       containers:
         - name: face-rec-app
           image: face-recognition-api
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           env:

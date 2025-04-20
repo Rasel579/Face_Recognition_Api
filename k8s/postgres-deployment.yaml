@@ -16,7 +16,7 @@ spec:
       containers:
         - name: postgres
           image: postgres:13
-          envFrom:
+          env:
           - name: POSTGRES_USER
             valueFrom:
               secretKeyRef:
