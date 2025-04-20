@@ -64,6 +64,8 @@ deploy_job:
         kind create cluster --name $CLUSTER_NAME --config k8s/cluster-config.yaml
         kubectl cluster-info
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+      else
+        kubectl cluster-info
       fi
     - kubectl cluster-info
     - kubectl apply -f k8s/namespace.yaml
