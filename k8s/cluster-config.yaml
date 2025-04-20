@@ -1,7 +1,8 @@
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 networking:
-  apiServerAddress: 0.0.0.0
+  apiServerAddress: "127.0.0.1"  # Явно указываем адрес
+  apiServerPort: 80            # Фиксируем порт
 nodes:
   - role: control-plane
     kubeadmConfigPatches:
