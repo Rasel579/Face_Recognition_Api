@@ -65,7 +65,7 @@ spec:
   selector:
     app: face-rec-app
   ports:
-    protocol: TCP
+  - protocol: TCP
     port: 80
     targetPort: 80
 
