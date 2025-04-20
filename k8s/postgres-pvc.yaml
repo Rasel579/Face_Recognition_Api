@@ -5,7 +5,7 @@ metadata:
   namespace: face-rec-ns
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
