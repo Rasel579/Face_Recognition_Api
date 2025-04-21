@@ -58,7 +58,7 @@ spec:
                 secretKeyRef:
                   name: face-rec-secrets
                   key: RESOURCES
-      volume:
+      volumes:
       - name: data-volume
         hostPath:
           path: /app/data
