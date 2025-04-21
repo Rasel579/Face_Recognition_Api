@@ -17,6 +17,9 @@ spec:
         - name: face-rec-app
           image: face-recognition-api
           imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: data-volume
+            mountPath: /app/data
           ports:
             - containerPort: 8081
           env:
@@ -55,6 +58,11 @@ spec:
                 secretKeyRef:
                   name: face-rec-secrets
                   key: RESOURCES
+      volume:
+      - name: data-volume
+        hostPath:
+          path: /app/data
+          type: Directory
 
 ---
 apiVersion: v1
