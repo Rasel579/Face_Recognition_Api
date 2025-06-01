@@ -17,7 +17,7 @@ nodes:
       - containerPort: 443
         hostPort: 443
     extraMounts:
-      - hostPath: /app/data
+      - hostPath: $DATA_PATH
         containerPath: /app/data
         readOnly: false
         propagation: Bidirectional
