@@ -73,7 +73,7 @@ deploy_job:
     - kubectl apply -f k8s/postgres-pvc.yaml
     - >
       if ! kubectl get secrets -n face-rec-ns | grep -q "face-rec-secrets"; then
-        echo "Создаем scrts"
+        echo "Создаем scrts..."
         kubectl create secret generic face-rec-secrets -n face-rec-ns --from-env-file=${CONFIG_PATH}
       fi
     - kubectl apply -f k8s/postgres-deployment.yaml
