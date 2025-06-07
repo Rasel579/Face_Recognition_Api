@@ -3,9 +3,11 @@ stages:
   - build
   - deploy
 variables:
-  DOCKER_HOST: unix:///var/run/docker.sock
   DOCKER_DRIVER: overlay2
   MAVEN_OPTS: "-Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository"
+  CLUSTER_NAME: "face-rec-cluster"
+  DOCKER_HOST: unix:///var/run/docker.sock
+  KUBECONFIG: "/root/.kube/config"
 
 cache:
   key: "maven-repo-${CI_COMMIT_REF_SLUG}"
@@ -14,7 +16,7 @@ cache:
 
 before_script:
   - echo "Старт CI"
-  - echo "Устанавливаем зависимости и настраиваем окружение"
+  - echo "Устанавливаем зависимости и настраиваем окружение "
   - docker-compose down || true
   - chmod +x ./scripts/notification.sh
 
@@ -25,7 +27,7 @@ run_tests:
   stage: test
   image: maven:3-openjdk-17
   script:
-    - echo "Запуск модульных тестов"
+    - echo "Запуск модульных тестов!"
     - mvn test -DPOSTGRES_URL=jdbc:postgresql://postgres_db:5432/test_db
     - echo "Тестирование завершено!"
   after_script:
@@ -43,9 +45,8 @@ build_job:
     docker rm face_rec-2 || true
     docker rmi face-recognition-api || true
   script:
-    - echo "Поднятие контейнеров"
+    - echo "Разворачиваем k8s"
     - docker build -t face-recognition-api .
-    - docker-compose --env-file ${CONFIG_PATH} up -d
   after_script:
     - apk add --no-cache curl
     - sh ./scripts/notification.sh
@@ -54,9 +55,34 @@ build_job:
 
 deploy_job:
   stage: deploy
-  image: alpine:latest
+  image: docker:latest
   script:
-    - echo "Контейнеры подняты"
+    - apk add --no-cache curl
+    - >
+      if ! kind get clusters | grep -q "face-rec-cluster "; then
+        echo "Создаем кластер face-rec-cluster.."
+        kind create cluster --name $CLUSTER_NAME --config k8s/cluster-config.yaml
+        docker cp ${DATA_PATH}  $CLUSTER_NAME-control-plane:${CONTAINER_CONFIG_PATH}
+        docker cp ${CONFIG_PATH}  $CLUSTER_NAME-control-plane:${CONFIG_PATH}
+        kubectl cluster-info
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+      else
+        kubectl cluster-info
+      fi
+    - kind load docker-image face-recognition-api --name face-rec-cluster
+    - kubectl cluster-info
+    - kubectl apply -f k8s/namespace.yaml
+    - kubectl apply -f k8s/postgres-pvc.yaml
+    - >
+      if ! kubectl get secrets -n face-rec-ns | grep -q "face-rec-secrets"; then
+        echo "Создаем scrts..."
+        kubectl create secret generic face-rec-secrets -n face-rec-ns --from-env-file=${CONFIG_PATH}
+      fi
+    - kubectl apply -f k8s/postgres-deployment.yaml
+    - kubectl wait --for=condition=ready pod -l app=postgres --timeout=300s -n face-rec-ns
+    - kubectl apply -f k8s/face-rec-deployment.yaml
+    - kubectl wait --for=condition=ready pod -l app=face-rec-app --timeout=300s -n face-rec-ns
+    - kubectl apply -f k8s/ingress-face-rec.yaml
     - echo "Инфраструктура развернута"
   after_script:
     - apk add --no-cache curl
