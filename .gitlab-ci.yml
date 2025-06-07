@@ -58,8 +58,6 @@ deploy_job:
   image: docker:latest
   script:
     - apk add --no-cache curl
-    - ls -a ${CONTAINER_CONFIG_PATH}
-    - ls -a ${DATA_PATH}
     - >
       if ! kind get clusters | grep -q "face-rec-cluster "; then
         echo "Создаем кластер face-rec-cluster.."
