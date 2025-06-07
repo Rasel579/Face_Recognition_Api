@@ -62,8 +62,8 @@ deploy_job:
       if ! kind get clusters | grep -q "face-rec-cluster"; then
         echo "Создаем кластер face-rec-cluster.."
         kind create cluster --name $CLUSTER_NAME --config k8s/cluster-config.yaml
-        docker cp /app/data kind-control-plane:/app/data
-        docker cp ${CONFIG_PATH} kind-control-plane:${CONFIG_PATH}
+        docker cp /app/data  $CLUSTER_NAME-control-plane:/app/data
+        docker cp ${CONFIG_PATH}  $CLUSTER_NAME-control-plane:${CONFIG_PATH}
         kubectl cluster-info
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
       else
