@@ -61,7 +61,7 @@ deploy_job:
     - ls -a ${CONTAINER_CONFIG_PATH}
     - ls -a ${DATA_PATH}
     - >
-      if ! kind get clusters | grep -q "face-rec-cluster"; then
+      if ! kind get clusters | grep -q "face-rec-cluster "; then
         echo "Создаем кластер face-rec-cluster.."
         kind create cluster --name $CLUSTER_NAME --config k8s/cluster-config.yaml
         docker cp ${DATA_PATH}  $CLUSTER_NAME-control-plane:${CONTAINER_CONFIG_PATH}
