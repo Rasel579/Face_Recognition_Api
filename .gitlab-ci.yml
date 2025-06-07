@@ -58,14 +58,14 @@ deploy_job:
   image: docker:latest
   script:
     - apk add --no-cache curl
-    - ls -a ${CONTAINER_CONFIG_PATH}
-    - ls -a ${DATA_PATH}
+    - ls -a $CONTAINER_CONFIG_PATH
+    - ls -a $DATA_PATH
     - >
       if ! kind get clusters | grep -q "face-rec-cluster "; then
         echo "Создаем кластер face-rec-cluster.."
         kind create cluster --name $CLUSTER_NAME --config k8s/cluster-config.yaml
-        docker cp ${DATA_PATH}  $CLUSTER_NAME-control-plane:${CONTAINER_CONFIG_PATH}
-        docker cp ${CONFIG_PATH}  $CLUSTER_NAME-control-plane:${CONFIG_PATH}
+        docker cp $DATA_PATH  $CLUSTER_NAME-control-plane:$CONTAINER_CONFIG_PATH
+        docker cp $CONFIG_PATH  $CLUSTER_NAME-control-plane:$CONFIG_PATH
         kubectl cluster-info
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
       else
